@@ -7,11 +7,27 @@ const DEFAULT_TASK_TYPE_UUID = "c7e5ba56-9a07-4a9f-b9b6-0f78334c0591";
 const VisibilitySchema = z.enum(["visible", "hidden", "hidden_empty"]);
 
 const BasePropertyTypes = z.enum(["text", "number", "date", "boolean"]);
-const BasePropertyDefaultValues = {
-  text: "",
-  number: 0,
-  date: new Date(),
-  boolean: false,
+const BasePropertyDefaults = {
+  text: {
+    value: "",
+    name : "Text",
+    icon :"📝"
+  },
+  number: {
+    value:0,
+    name: "Number",
+    icon:"🔢"
+  },
+  date: {
+    value: new Date,
+    name:"Date",
+    icon:"📅"
+  },
+  boolean: {
+    value: false,
+    name : "Boolean",
+    icon : "✅"
+  },
 }
 
 const BasePropertySchema = z.object({
@@ -112,7 +128,7 @@ export type { ObjectProperty, ObjectType, ObjectPropertyMap, PropertyTypeEnum };
 
 export {
   BasePropertyTypes as PropertyType,
-  BasePropertyDefaultValues as PropertyDefaultValues,
+  BasePropertyDefaults as PropertyDefaults,
   BasePropertySchema,
   PropertySchema,
   ObjectTypeSchema,

@@ -18,7 +18,7 @@ import {
   ObjectPropertyMap,
   ObjectType,
   ObjectTypeSchema,
-  PropertyDefaultValues,
+  PropertyDefaults,
   PropertyType,
   PropertyTypeEnum,
 } from "../../types/objectTypes";
@@ -44,6 +44,7 @@ import {
 } from "../ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTabsState } from "../../store/layoutStore";
+import Icon from "../ui/icon";
 const CreateObjectSchema = ObjectTypeSchema.omit({ id: true });
 
 const ColorPicker = ({
@@ -142,7 +143,8 @@ export default function CreateObjectType(props: { tabID: string }) {
   const onPropertyTypeChange = (
     key: string,
     type: PropertyTypeEnum,
-    name?: string
+    name?: string,
+    icon? : string
   ) => {
     setProperties((prev) => {
       return produce(prev, (draft) => {
@@ -155,7 +157,9 @@ export default function CreateObjectType(props: { tabID: string }) {
               return t?.id === type;
             })?.name ?? "Unknown";
         } else {
-          draft[key].defaultValue = JSON.stringify(PropertyDefaultValues[type]);
+          draft[key].name = name ?? PropertyDefaults[type].name;
+          draft[key].icon = icon ?? PropertyDefaults[type].icon;
+          draft[key].defaultValue = JSON.stringify(PropertyDefaults[type].value);
         }
       });
     });
@@ -261,8 +265,9 @@ export default function CreateObjectType(props: { tabID: string }) {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Select
-                      onValueChange={(value) =>
-                        onPropertyTypeChange(key, value as PropertyTypeEnum)
+                      onValueChange={(value) =>{
+                          onPropertyTypeChange(key, value as PropertyTypeEnum);
+                      }
                       }
                       value={prop.type}
                     >
