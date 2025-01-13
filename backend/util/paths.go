@@ -1,14 +1,14 @@
 package util
 
 import (
-	"path/filepath"
-
-	"github.com/adrg/xdg"
+	"fmt"
 )
 
 const LIHA_FOLDER_NAME = "liha"
 const LIHA_DB_NAME = "liha.db"
 
 func GetDataDir() (string, error) {
-	return filepath.Join(xdg.DataHome, LIHA_FOLDER_NAME), nil
+	dirPath := "/Users/qwelian/Programs/apps/2b/db"
+	fmt.Printf("Directory path: %s \n\n", dirPath)
+	return dirPath, nil
 }

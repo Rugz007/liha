@@ -37,7 +37,7 @@ func main() {
 	}
 	// Create application with options
 	err = wails.Run(&options.App{
-		Title:  "liha",
+		Title:  "2b",
 		Width:  1920,
 		Height: 1080,
 		AssetServer: &assetserver.Options{
@@ -59,8 +59,8 @@ func main() {
 				HideToolbarSeparator:       true,
 			},
 			About: &mac.AboutInfo{
-				Title:   "Liha",
-				Message: "Liha is a desktop app for managing your tasks.",
+				Title:   "2b",
+				Message: "2b is a desktop app for managing your tasks.",
 				Icon:    icon,
 			},
 		},
