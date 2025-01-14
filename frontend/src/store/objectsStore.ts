@@ -5,6 +5,7 @@ import {
   GetAllObjects,
   GetObject,
   UpdateObject,
+  WriteObjectFile,
 } from "../../wailsjs/go/main/App";
 import { useQueryWrapper } from "./util";
 import {
@@ -142,10 +143,12 @@ function useObjectsOfType(type: string) {
   const { data: allObjectIDs } = useAllObjectsIDs();
   const allObjectsQueries = useAllObjects(allObjectIDs);
   const allObjects = allObjectsQueries.map((query) => query.data);
-  const filteredObjects =  allObjects.filter((object) => object && object.type === type);
+  const filteredObjects = allObjects.filter(
+    (object) => object && object.type === type
+  );
   return filteredObjects as ObjectInstance[];
 }
-``
+``;
 function useObject(id: string) {
   return useQueryWrapper<ObjectInstance>({
     queryKey: ["object", id],
@@ -168,6 +171,16 @@ function useDeleteObject() {
     queryClient.invalidateQueries({
       queryKey: ["objects", "object", id],
     });
+  };
+}
+
+function useWriteObject() {
+  return async (id: string, markdown: string) => {
+    if (!id) {
+      console.error("Object ID is undefined.");
+      return;
+    }
+    await WriteObjectFile(id, markdown);
   };
 }
 
@@ -217,5 +230,6 @@ export {
   useDefaultFont,
   useBackgroundColor,
   useObjectsOfType,
+  useWriteObject,
   DEFAULT_OBJECT,
 };

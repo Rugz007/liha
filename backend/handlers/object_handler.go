@@ -4,6 +4,9 @@ import (
 	"app/backend/models"
 	"app/backend/repositories"
 	"app/backend/util"
+	"fmt"
+	"os"
+	"strings"
 
 	"github.com/adrg/xdg"
 	"go.uber.org/zap"
@@ -88,13 +91,24 @@ func ReadObjectFile(objectID string, logger *zap.Logger) (string, error) {
 	return util.ReadJSONFile(path, logger)
 }
 
-func WriteObjectFile(objectID string, object string, logger *zap.Logger) error {
+func WriteObjectFile(objectID string, markdown string, logger *zap.Logger) error {
 	path, err := getObjectFilePath(objectID)
 	if err != nil {
 		logger.Error("Error getting object file path", zap.Error(err))
 		return err
 	}
-	return util.WriteJSONFile(path, object, logger)
+
+	markdownPath := strings.Replace(path, ".json", ".md", 1)
+
+	err = os.WriteFile(markdownPath, []byte(markdown), 0644)
+	if err != nil {
+		logger.Error("Error writing markdown file", zap.Error(err))
+		return err
+	}
+
+	logger.Info("Exported to", zap.String("path", markdownPath))
+	fmt.Printf("\n\nExported to: %s\n\n", markdownPath)
+	return nil
 }
 
 func DeleteObjectFile(objectID string, logger *zap.Logger) error {
