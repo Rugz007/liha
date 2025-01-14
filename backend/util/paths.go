@@ -9,6 +9,6 @@ const LIHA_DB_NAME = "liha.db"
 
 func GetDataDir() (string, error) {
 	dirPath := "/Users/qwelian/Programs/apps/2b/db"
-	fmt.Printf("Directory path: %s \n\n", dirPath)
+	fmt.Printf("db path: %s \n\n", dirPath)
 	return dirPath, nil
 }

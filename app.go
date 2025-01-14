@@ -29,6 +29,7 @@ func NewApp() *App {
 	logger.Info("Creating App Struct")
 	database, err := db.InitDB(logger)
 	db.CreateTables(database)
+	fmt.Print("\n\nMIGRATED DB\n\n")
 	repos := repositories.NewRepositories(database)
 	handlers := handlers.NewHandlers(repos)
 	defer logger.Sync()

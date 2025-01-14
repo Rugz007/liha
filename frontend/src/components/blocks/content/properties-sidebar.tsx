@@ -30,7 +30,7 @@ const PropertiesSidebar = memo(
       enabled: !!objectTypeId,
     });
 
-    if (!object || !objectType) {
+    if (!object || !objectType || !object.properties) {
       return <div>Loading...</div>;
     }
     return (
