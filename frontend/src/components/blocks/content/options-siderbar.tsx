@@ -48,7 +48,19 @@ import {
 } from "../../ui/dialog";
 
 const objectToMarkdown = (object: ObjectInstance): string => {
-  let markdown = `# ${object.title}\n\n`;
+  // Generate YAML frontmatter
+  const frontmatter = `---
+title: "${object.title}"
+date: "${new Date().toISOString()}"${
+    object.description ? `\ndescription: "${object.description}"` : ""
+  }
+---
+`;
+  // Start with frontmatter
+  let markdown = frontmatter;
+
+  // Add main content
+  markdown += `# ${object.title}\n\n`;
 
   if (object.description) {
     markdown += `${object.description}\n\n`;

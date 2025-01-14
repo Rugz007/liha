@@ -4,7 +4,7 @@
   "outputfilename": "app",
   "frontend:install": "pnpm install",
   "frontend:build": "pnpm run build",
-  "frontend:dev:watcher": "pnpm run dev --port 3000",
+  "frontend:dev:watcher": "pnpm run dev --port 3030",
   "frontend:dev:serverUrl": "auto",
   "author": {
     "name": "Rugved Somwanshi",

@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/adrg/xdg"
 	"go.uber.org/zap"
 )
 
@@ -26,11 +25,18 @@ func NewObjectHandler(
 
 // DEPRECATED
 func getObjectFilePath(objectID string) (string, error) {
-	filepath, err := xdg.DataFile("liha/objects/" + objectID + ".json")
-	if err != nil {
-		return "", err
+	// Define the base path for your content directory
+	basePath := "/Users/qwelian/Programs/apps/blog/content/"
+
+	// Combine the base path and object ID with the desired file extension
+	filePath := basePath + objectID + ".json"
+
+	// Check if the directory exists
+	if _, err := os.Stat(basePath); os.IsNotExist(err) {
+		return "", fmt.Errorf("base path does not exist: %s", basePath)
 	}
-	return filepath, nil
+
+	return filePath, nil
 }
 
 func (o *ObjectHandler) GetAllObjectIDs(logger *zap.Logger) ([]string, error) {
@@ -98,7 +104,7 @@ func WriteObjectFile(objectID string, markdown string, logger *zap.Logger) error
 		return err
 	}
 
-	markdownPath := strings.Replace(path, ".json", ".md", 1)
+	markdownPath := strings.Replace(path, ".json", ".mdx", 1)
 
 	err = os.WriteFile(markdownPath, []byte(markdown), 0644)
 	if err != nil {
