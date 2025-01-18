@@ -26,7 +26,7 @@ import {
   DEFAULT_TODO_LIST_TAB_ID,
   useSidebarState,
   useTabsState,
-} from "@/store/layoutStore";
+} from "@/store/miscStore";
 import { v4 as uuid } from "uuid";
 import { cn } from "@/lib/utils";
 import { Separator } from "../../ui/separator";

@@ -34,6 +34,10 @@ export function GetObject(arg1) {
   return window['go']['main']['App']['GetObject'](arg1);
 }
 
+export function GetRecentObjectsofType(arg1) {
+  return window['go']['main']['App']['GetRecentObjectsofType'](arg1);
+}
+
 export function GetSummary(arg1) {
   return window['go']['main']['App']['GetSummary'](arg1);
 }
@@ -48,6 +52,10 @@ export function ReadObjectTypeFile(arg1) {
 
 export function ReadStateFile() {
   return window['go']['main']['App']['ReadStateFile']();
+}
+
+export function SendMessage(arg1, arg2) {
+  return window['go']['main']['App']['SendMessage'](arg1, arg2);
 }
 
 export function UpdateObject(arg1) {

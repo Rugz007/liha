@@ -5,6 +5,7 @@ import {
   GetAllObjects,
   GetObject,
   UpdateObject,
+  GetRecentObjectsofType,
 } from "../../wailsjs/go/main/App";
 import { useQueryWrapper } from "./util";
 import {
@@ -47,7 +48,7 @@ const ObjectInstanceSchema = z.strictObject({
   title: z.string(),
   description: z.string().optional(),
   contents: z.record(ContentTypeSchema).optional(),
-  properties: PropertyValueMapSchema,
+  properties: PropertyValueMapSchema.optional(),
   aiReady: z.boolean().default(false).optional(),
   pageCustomization: z.object({
     backgroundColor: z.string().default(""),
@@ -105,6 +106,19 @@ function useAllObjectsIDs() {
     queryKey: ["objects"],
     queryFn: async () => {
       const result = await GetAllObjects();
+      if (result) {
+        return result;
+      }
+      return [];
+    },
+  });
+}
+
+function useRecentObjectIDs(objectType: string) {
+  return useQuery<string[]>({
+    queryKey: ["objects"],
+    queryFn: async () => {
+      const result = await GetRecentObjectsofType(objectType);
       if (result) {
         return result;
       }
@@ -218,5 +232,6 @@ export {
   useDefaultFont,
   useBackgroundColor,
   useObjectsOfType,
+  useRecentObjectIDs,
   DEFAULT_OBJECT,
 };

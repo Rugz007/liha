@@ -32,7 +32,7 @@ import { Extensions } from "./text/text-editor";
 import { RefObject, useEffect, useState } from "react";
 import { cn } from "../../../lib/utils";
 import { ColorPicker } from "../../ui/color-picker";
-import { useTabsState } from "../../../store/layoutStore";
+import { useTabsState } from "../../../store/miscStore";
 import {
   Dialog,
   DialogContent,
@@ -164,11 +164,7 @@ const OptionsSidebar = ({
       </TabsContent>
       <TabsContent
         value="text"
-        className={cn(
-          "h-full flex flex-col px-3 gap-2 overflow-y-auto",
-          !isTextSelected &&
-            "text-muted-foreground pointer-events-none opacity-30"
-        )}
+        className={cn("h-full flex flex-col px-3 gap-2 overflow-y-auto")}
       >
         <div className="space-y-4">
           <div>
@@ -185,10 +181,26 @@ const OptionsSidebar = ({
               >
                 H1
               </Button>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.toggleHeading({ level: 2 });
+                  }
+                }}
+              >
                 H2
               </Button>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.toggleHeading({ level: 3 });
+                  }
+                }}
+              >
                 H3
               </Button>
             </div>
@@ -231,22 +243,49 @@ const OptionsSidebar = ({
               >
                 <Underline size={16} />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button
+                variant={selectedTextAttributes.code ? "default" : "outline"}
+                size="icon"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.toggleCode();
+                  }
+                }}
+              >
                 <Code size={16} />
               </Button>
-              <Button variant="outline" size="icon">
+              {/* TODO: Add lists */}
+              {/* <Button variant="outline" size="icon">
                 <CheckSquare size={16} />
               </Button>
               <Button variant="outline" size="icon">
                 <Play size={16} />
-              </Button>
-              <Button variant="outline" size="icon">
+              </Button> */}
+              <Button
+                variant={selectedTextAttributes.list ? "default" : "outline"}
+                size="icon"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.toggleBulletList();
+                  }
+                }}
+              >
                 <List size={16} />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button
+                variant={
+                  selectedTextAttributes.orderedList ? "default" : "outline"
+                }
+                size="icon"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.toggleOrderedList();
+                  }
+                }}
+              >
                 <ListOrdered size={16} />
               </Button>
-              <Button variant="outline" size="icon">
+              {/* <Button variant="outline" size="icon">
                 <AlignLeft size={16} />
               </Button>
               <Button variant="outline" size="icon">
@@ -257,7 +296,7 @@ const OptionsSidebar = ({
               </Button>
               <Button variant="outline" size="icon">
                 <AlignJustify size={16} />
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div>
@@ -281,6 +320,9 @@ const OptionsSidebar = ({
                   key={color}
                   className="w-8 h-8 rounded-full p-0"
                   style={{ backgroundColor: color }}
+                  onClick={() =>
+                    editorRef.current?.commands.setTextColor(color)
+                  }
                 />
               ))}
             </div>
@@ -288,11 +330,29 @@ const OptionsSidebar = ({
           <div className={cn("flex flex-col gap-2")}>
             <h3 className="text-sm font-semibold mb-2">FONT</h3>
             <div className="flex gap-2 w-full justify-between">
-              <Button variant="outline" size="sm" className="w-1/2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-1/2"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.setFontFamily("sans-serif");
+                  }
+                }}
+              >
                 <span className="font-sans">Aa</span>
                 <span className="text-xs ml-1">Default</span>
               </Button>
-              <Button variant="outline" size="sm" className="w-1/2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-1/2"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.setFontFamily("serif");
+                  }
+                }}
+              >
                 <span className="font-serif">Ss</span>
                 <span className="text-xs ml-1">Serif</span>
               </Button>
@@ -311,10 +371,19 @@ const OptionsSidebar = ({
                 <span className="font-mono">00</span>
                 <span className="text-xs ml-1">Mono</span>
               </Button>
-              <Button variant="secondary" size="sm" className="w-1/2">
+              {/* <Button
+                variant="secondary"
+                size="sm"
+                className="w-1/2"
+                onClick={() => {
+                  if (editorRef && editorRef.current) {
+                    editorRef.current.commands.setFontFamily("round");
+                  }
+                }}
+              >
                 <span className="font-sans">Rr</span>
                 <span className="text-xs ml-1">Round</span>
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

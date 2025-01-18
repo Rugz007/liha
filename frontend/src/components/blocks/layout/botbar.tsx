@@ -2,9 +2,9 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Bot, LucideLightbulb, LucidePanelRightClose } from "lucide-react";
 import { Button } from "../../ui/button";
-import { useBotSidebarState } from "../../../store/layoutStore";
+import { useBotSidebarState } from "../../../store/miscStore";
 import { Separator } from "../../ui/separator";
-import Chat from "../content/chat/chat";
+import Chat from "../chat/chat";
 
 const Botbar = () => {
   const { setBotSidebarOpen, isBotSidebarOpen } = useBotSidebarState();

@@ -17,6 +17,8 @@ export function GetChat(arg1:string):Promise<string>;
 
 export function GetObject(arg1:string):Promise<string>;
 
+export function GetRecentObjectsofType(arg1:string):Promise<Array<string>>;
+
 export function GetSummary(arg1:string):Promise<string>;
 
 export function ReadObjectFile(arg1:string):Promise<string>;
@@ -24,6 +26,8 @@ export function ReadObjectFile(arg1:string):Promise<string>;
 export function ReadObjectTypeFile(arg1:string):Promise<string>;
 
 export function ReadStateFile():Promise<string>;
+
+export function SendMessage(arg1:string,arg2:string):Promise<string>;
 
 export function UpdateObject(arg1:string):Promise<void>;
 

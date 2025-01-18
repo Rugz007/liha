@@ -43,7 +43,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTabsState } from "../../store/layoutStore";
+import { useTabsState } from "../../store/miscStore";
 const CreateObjectSchema = ObjectTypeSchema.omit({ id: true });
 
 const ColorPicker = ({
@@ -54,27 +54,27 @@ const ColorPicker = ({
   onChange: (color: string) => void;
 }) => {
   const colors = [
-    "red-500",
-    "yellow-500",
-    "green-500",
-    "blue-500",
-    "indigo-500",
-    "purple-500",
-    "pink-500",
-    "gray-500",
+    { name: "red-500", class: "bg-red-500" },
+    { name: "yellow-500", class: "bg-yellow-500" },
+    { name: "green-500", class: "bg-green-500" },
+    { name: "blue-500", class: "bg-blue-500" },
+    { name: "indigo-500", class: "bg-indigo-500" },
+    { name: "purple-500", class: "bg-purple-500" },
+    { name: "pink-500", class: "bg-pink-500" },
+    { name: "gray-500", class: "bg-gray-500" },
   ];
 
   return (
     <div className="flex space-x-2 py-1 mt-2">
-      {colors.map((bgColor) => (
+      {colors.map((colorObj) => (
         <button
-          key={bgColor}
-          className={`w-6 h-6 rounded-full bg-${bgColor} transition-all duration-200 ease-in-out ${
-            color === bgColor ? "ring-2 ring-offset-2 ring-gray-400" : ""
+          key={colorObj.name}
+          className={`w-6 h-6 rounded-full ${colorObj.class} transition-all duration-200 ease-in-out ${
+            color === colorObj.name ? "ring-2 ring-offset-2 ring-gray-400" : ""
           }`}
           onClick={(e) => {
             e.preventDefault();
-            onChange(bgColor);
+            onChange(colorObj.name);
           }}
         />
       ))}

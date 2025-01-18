@@ -108,25 +108,23 @@ const ImageBlock: React.FC<ImageBlockProps> = ({
           </Select>
           <Separator />
           <p>Actions</p>
-          <Button>Change</Button>
-          <Button className="w-full" variant={"destructive"}>
-            Delete
-          </Button>
-        </PopoverContent>
-      </Popover>
-      <Dialog>
-        <DialogTrigger asChild>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onUpload}
+            className="hidden"
+            id="imageUpload"
+          />
           <Button
-            variant="secondary"
-            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-            size="sm"
+            className="w-full"
+            onClick={() => document.getElementById("imageUpload")?.click()}
           >
-            Upload Image
+            Change Image
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>Upload Image</DialogHeader>
+
           <Button
+            className="w-full"
+            variant={"destructive"}
             onClick={() => {
               const newObject = produce(object, (draft) => {
                 if (!draft.contents) draft.contents = {};
@@ -135,11 +133,10 @@ const ImageBlock: React.FC<ImageBlockProps> = ({
               mutate(newObject);
             }}
           >
-            Delete Image
+            Delete
           </Button>
-          <Input type="file" accept="image/*" onChange={onUpload} />
-        </DialogContent>
-      </Dialog>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

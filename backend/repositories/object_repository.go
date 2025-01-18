@@ -284,3 +284,102 @@ func (r *ObjectRepository) UpdateObject(object *models.Object, propertyTypes *[]
 
 	return nil
 }
+
+func (r *ObjectRepository) DeleteObject(objectID string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM property WHERE object_id = ?", objectID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return nil
+}
+
+func (r *ObjectRepository) AddNewContentToObject(objectID string, newContent string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	newContentID := uuid.New().String()
+	contentObj := map[string]interface{}{
+		"id":      newContentID,
+		"type":    "text",
+		"content": newContent,
+		"x":       0,
+		"y":       0,
+		"w":       12,
+		"h":       12,
+	}
+
+	var contents string
+	err = tx.QueryRow("SELECT contents FROM object WHERE id = ?", objectID).Scan(&contents)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	var contentsMap map[string]interface{}
+	err = json.Unmarshal([]byte(contents), &contentsMap)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	contentsMap[newContentID] = contentObj
+	contentsJSON, err := json.Marshal(contentsMap)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("UPDATE object SET contents = ? WHERE id = ?", string(contentsJSON), objectID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}
+
+func (r *ObjectRepository) GetRecentObjectsOfType(objectType string) ([]string, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	rows, err := tx.Query("SELECT id FROM object WHERE object_type_id = ? ORDER BY last_modified DESC LIMIT 5", objectType)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var objectIDs []string
+
+	for rows.Next() {
+		var objectID string
+		err := rows.Scan(&objectID)
+		if err != nil {
+			return nil, err
+		}
+		objectIDs = append(objectIDs, objectID)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, err
+	}
+
+	return objectIDs, nil
+}

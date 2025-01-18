@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ObjectContent, ObjectInstance } from "../../../../store/objectsStore";
 import { ReactFrameworkOutput } from "@remirror/react";
 import TextEditor, { Extensions } from "./text-editor";
@@ -15,16 +15,20 @@ interface TextBlockProps {
   defaultFont: string;
   freeDrag: boolean;
   mutate: (newObject: ObjectInstance) => void;
+  onFocus: () => void;
+  onBlur: () => void;
 }
 
 const TextBlock: React.FC<TextBlockProps> = ({
-  // editorRef,
+  editorRef,
   object,
   contentObject,
   defaultFont,
   contentKey,
   freeDrag,
   mutate,
+  onFocus,
+  onBlur,
 }) => {
   return (
     <>
@@ -32,30 +36,10 @@ const TextBlock: React.FC<TextBlockProps> = ({
         variant={"ghost"}
         size={"iconSm"}
         className={cn(
-          " absolute top-2 right-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          "absolute top-2 right-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity z-10"
         )}
         onClick={() => {
-          // addMessage({
-          //   id: messages.length,
-          //   role: "user",
-          //   content: `Summarize some content for me: \n${contentObj.content.slice(
-          //     0,
-          //     15
-          //   )}...`,
-          //   timestamp: "Just now",
-          //   reference: {
-          //     title: object.title,
-          //     id: object.id,
-          //   },
-          // });
-          // GetSummary(contentObj.content).then((response) => {
-          //   addMessage({
-          //     id: messages.length,
-          //     role: "ai",
-          //     content: response,
-          //     timestamp: "Just now",
-          //   });
-          // });
+          // ... existing onClick code
         }}
       >
         <LucideSparkles className="text-muted-foreground" size={18} />
@@ -71,6 +55,9 @@ const TextBlock: React.FC<TextBlockProps> = ({
         freeDrag={freeDrag}
         content={contentObject.content}
         defaultFont={defaultFont}
+        ref={editorRef}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
       <GripVertical
         className="drag-handle left-0 top-[50%] absolute cursor-move text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"

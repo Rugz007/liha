@@ -79,6 +79,10 @@ func (o *ObjectHandler) UpdateObject(object *models.Object, logger *zap.Logger) 
 	return nil
 }
 
+func (o *ObjectHandler) GetRepository() *repositories.ObjectRepository {
+	return o.objectRepository
+}
+
 func ReadObjectFile(objectID string, logger *zap.Logger) (string, error) {
 	path, err := getObjectFilePath(objectID)
 	if err != nil {
@@ -104,4 +108,13 @@ func DeleteObjectFile(objectID string, logger *zap.Logger) error {
 		return err
 	}
 	return util.DeleteFile(path, logger)
+}
+
+func (o *ObjectHandler) GetRecentObjectsOfType(objectTypeID string, logger *zap.Logger) ([]string, error) {
+	objectIDs, err := o.objectRepository.GetRecentObjectsOfType(objectTypeID)
+	if err != nil {
+		logger.Error("Error getting recent objects of type", zap.Error(err))
+		return nil, err
+	}
+	return objectIDs, nil
 }

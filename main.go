@@ -3,10 +3,7 @@ package main
 import (
 	"context"
 	"embed"
-	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/wailsapp/wails/v2"
@@ -15,9 +12,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
-
-//go:embed test.sh
-var test embed.FS
 
 //go:embed all:frontend/dist/*
 var assets embed.FS
@@ -34,7 +28,6 @@ func (a *App) onSecondInstanceLaunch(secondInstanceData options.SecondInstanceDa
 }
 
 func main() {
-	RunSHFile()
 	// Create an instance of the app structure
 	app := NewApp()
 
@@ -81,43 +74,4 @@ func main() {
 		println("Error:", err.Error())
 	}
 
-}
-
-func RunSHFile() {
-	data, err := test.ReadFile("test.sh")
-	if err != nil {
-		println("Error reading file:", err.Error())
-	}
-	// Run the script
-	cmd := exec.Command("sh")
-	cmd.Stdin = strings.NewReader(string(data))
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	if err != nil {
-		println("Error running script:", err.Error())
-	}
-
-	fmt.Print("Script ran successfully")
-}
-
-func RunAIPythonBin() {
-	execPath, err := os.Executable()
-	if err != nil {
-		println("Error getting executable path:", err.Error())
-		return
-	}
-	// Run the script
-	appDir := filepath.Dir(execPath)
-	resourcesPath := filepath.Join(appDir, "../Resources/ai_new/_build/app-server/bin/python")
-
-	cmd := exec.Command(resourcesPath, "-m", "server")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	if err != nil {
-		println("Error running script:", err.Error())
-		return
-	}
-	cmd.Wait()
 }

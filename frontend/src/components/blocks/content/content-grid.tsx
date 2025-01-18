@@ -32,6 +32,9 @@ const ContentGrid = ({
   mutate: (newObject: ObjectInstance) => void;
   editorRef: React.MutableRefObject<ReactFrameworkOutput<Extensions> | null>;
 }) => {
+  const [activeTextBlock, setActiveTextBlock] = React.useState<string | null>(
+    null
+  );
   return (
     <ResponsiveGridLayout
       className="layout overflow-x-clip"
@@ -97,12 +100,21 @@ const ContentGrid = ({
               <div className={cn("content-block relative group")} key={key}>
                 <TextBlock
                   freeDrag={freeDrag}
-                  editorRef={editorRef}
+                  editorRef={
+                    activeTextBlock === key ? editorRef : { current: null }
+                  }
                   object={object}
                   contentObject={contentObj}
                   defaultFont={defaultFont}
                   contentKey={key}
                   mutate={mutate}
+                  key={key}
+                  onBlur={() =>
+                    activeTextBlock === key
+                      ? () => setActiveTextBlock(null)
+                      : undefined
+                  }
+                  onFocus={() => setActiveTextBlock(key)}
                 />
               </div>
             );

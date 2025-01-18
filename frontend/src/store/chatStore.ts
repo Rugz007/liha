@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { GetChat } from "../../wailsjs/go/main/App";
+import { SendMessage } from "../../wailsjs/go/main/App";
+import { useObject } from "./objectsStore";
 
 type MessageRole = "user" | "ai" | "reference";
 
@@ -23,11 +24,16 @@ const useMessageStore = create<{
     set((state) => ({ messages: [...state.messages, message] })),
 }));
 
-function useSendMessage() {
+function useSendMessage(currentObjectID: string) {
   const { messages, addMessage } = useMessageStore();
+  const { refetch } = useObject(currentObjectID);
   return async (message: Message) => {
     addMessage(message);
-    const response = await GetChat(JSON.stringify(messages));
+    const response = await SendMessage(message.content, currentObjectID);
+    if (response.startsWith("$TOOL_USAGE")) {
+      // Refetch the current object id to get the updated object
+      refetch();
+    }
     addMessage({
       id: messages.length + 1,
       role: "ai",

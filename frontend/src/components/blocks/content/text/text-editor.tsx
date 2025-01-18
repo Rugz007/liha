@@ -20,14 +20,21 @@ import {
   Remirror,
   useHelpers,
   useRemirror,
+  useRemirrorContext,
 } from "@remirror/react";
 import "remirror/styles/all.css";
 import "../../../../remirror.css";
-import { forwardRef, useCallback } from "react";
+import { forwardRef, useCallback, useImperativeHandle } from "react";
 import debounce from "lodash/debounce";
 import { ThemeProvider } from "@remirror/react";
 import { Button } from "../../../ui/button";
 import { cn } from "../../../../lib/utils";
+import { FloatingToolbar } from "./floating-toolbar";
+import { DecorationsExtension } from "remirror";
+import { motion } from "framer-motion";
+import { TextColorExtension } from 'remirror/extensions';
+
+
 // import { WysiwygEditor } from '@remirror/react-editors/wysiwyg';
 const extensions = () => [
   new PlaceholderExtension({
@@ -55,6 +62,8 @@ const extensions = () => [
   new FontFamilyExtension({}),
   new PositionerExtension({}),
   new UnderlineExtension(),
+  new DecorationsExtension({}),
+  new TextColorExtension({}),
 ];
 
 export type Extensions = ReactExtensions<
@@ -72,19 +81,51 @@ export type Extensions = ReactExtensions<
   | PositionerExtension
   | UnderlineExtension
   | MarkdownExtension
+  | DecorationsExtension
+  | TextColorExtension
 >;
 interface TextEditorProps {
   mutate: (newState: string) => void;
   content: string;
   defaultFont: string;
   freeDrag: boolean;
+  onFocus: () => void;
+  onBlur: () => void;
 }
+
+const EditorComponent = ({
+  onBlur,
+  onFocus,
+}: {
+  onFocus: () => void;
+  onBlur: () => void;
+}) => {
+  const { getText } = useHelpers();
+  const text = getText();
+
+  return (
+    <motion.div
+      {...useRemirrorContext().getRootProps()}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className="w-full h-8 bg-gradient-to-b from-background to-transparent "
+      // animate={{
+      //   opacity: [0, 1, 0],
+      // }}
+      // transition={{
+      //   duration: 4,
+      //   repeat: Infinity,
+      //   ease: "easeInOut",
+      // }}
+    />
+  );
+};
 
 const TextEditor = forwardRef<
   ReactFrameworkOutput<Extensions>,
   TextEditorProps
->(({ mutate, content, defaultFont, freeDrag }, ref) => {
-  const { manager, state, setState } = useRemirror({
+>(({ mutate, content, defaultFont, freeDrag, onFocus, onBlur }, ref) => {
+  const { manager, state, setState, getContext } = useRemirror({
     extensions: extensions,
     content: content,
     stringHandler: "markdown",
@@ -95,6 +136,8 @@ const TextEditor = forwardRef<
     }, 300),
     [mutate]
   );
+  //@ts-expect-error - This is a hack to get the context
+  useImperativeHandle(ref, () => getContext(), [getContext]);
 
   return (
     <div
@@ -120,7 +163,10 @@ const TextEditor = forwardRef<
                 setState(state);
               }}
               state={state}
-            ></Remirror>
+            >
+              <EditorComponent onFocus={onFocus} onBlur={onBlur} />
+              <FloatingToolbar />
+            </Remirror>
           </ThemeProvider>
         </div>
       </div>

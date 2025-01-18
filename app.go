@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/backend/ai"
 	"app/backend/db"
 	"app/backend/handlers"
 	objectsAPI "app/backend/handlers"
@@ -25,7 +26,7 @@ type App struct {
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	go RunAIPythonBin()
+
 	logger := zap.Must(zap.NewDevelopment())
 	logger.Info("Creating App Struct")
 	database, err := db.InitDB(logger)
@@ -238,4 +239,24 @@ func (a *App) WriteStateFile(state string) error {
 		return err
 	}
 	return nil
+}
+
+func (a *App) SendMessage(message string, currentObjectID string) (string, error) {
+	client := ai.CreateLMStudioClient(a.logger)
+	repo := a.handlers.ObjectHandler.GetRepository()
+	resp, err := ai.SendMessage(client, message, a.logger, repo, currentObjectID)
+	if err != nil {
+		a.logger.Error("Error sending message", zap.Error(err))
+		return "", err
+	}
+	return resp, nil
+}
+
+func (a *App) GetRecentObjectsofType(objectType string) ([]string, error) {
+	data, err := a.handlers.ObjectHandler.GetRecentObjectsOfType(objectType, a.logger)
+	if err != nil {
+		a.logger.Error("Error getting all object types", zap.Error(err))
+		return nil, err
+	}
+	return data, nil
 }

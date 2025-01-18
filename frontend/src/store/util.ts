@@ -18,9 +18,10 @@ function useMutableQuery<T>({
   isError: boolean;
   isPending: boolean;
   isSuccess: boolean;
+  refetch: () => void;
 } {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: queryFn,
     staleTime: Infinity,
@@ -60,7 +61,7 @@ function useMutableQuery<T>({
   if (error) {
     console.error(error);
   }
-  return { data, isLoading, error, mutate, isError, isPending, isSuccess };
+  return { data, isLoading, error, mutate, isError, isPending, isSuccess, refetch };
 }
 
 export { useMutableQuery as useQueryWrapper };

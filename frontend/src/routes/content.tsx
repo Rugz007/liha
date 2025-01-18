@@ -4,7 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { useSidebarState, useTabsState } from "../store/layoutStore";
+import { useSidebarState, useTabsState } from "../store/miscStore";
 import CreateObjectType from "../components/blocks/CreateObjectType";
 import {
   Dialog,

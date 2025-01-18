@@ -20,6 +20,7 @@ import {
   ResizablePanelGroup,
 } from "../ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { useAllObjects, useRecentObjectIDs } from "../../store/objectsStore";
 
 interface ObjectDashboardProps {
   tabId: string;
@@ -54,6 +55,10 @@ const darkerColorMap: {
 const ObjectDashboard: React.FC<ObjectDashboardProps> = ({ tabId }) => {
   const { data: objectType } = useObjectType(tabId);
   const mutate = useUpdateObjectType(tabId);
+  const { data: recentObjectIDs } = useRecentObjectIDs(objectType?.id ?? "");
+  const queries = useAllObjects(recentObjectIDs);
+  // Get the recent objects
+  const recentObjects = queries.map((query) => query.data).filter(Boolean);
   if (!objectType) return null;
   const color = objectType.color.split("-")[0];
   return (
@@ -106,54 +111,24 @@ const ObjectDashboard: React.FC<ObjectDashboardProps> = ({ tabId }) => {
         </Button>
       </div>
       <div className="flex gap-2">
-        <div
-          className={cn("border rounded-md p-4 max-w-md")}
-          style={{
-            backgroundColor: colorMap[color],
-          }}
-        >
-          <p className="text-xl">Task 1</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            tristique elit eget sapien rhoncus, nec volutpat purus ultricies.
-          </p>
-        </div>
-        <div
-          className={cn("border rounded-md p-4 max-w-md")}
-          style={{
-            backgroundColor: colorMap[color],
-          }}
-        >
-          <p className="text-xl">Task 1</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            tristique elit eget sapien rhoncus, nec volutpat purus ultricies.
-          </p>
-        </div>
-        <div
-          className={cn("border rounded-md p-4 max-w-md")}
-          style={{
-            backgroundColor: colorMap[color],
-          }}
-        >
-          <p className="text-xl">Task 1</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            tristique elit eget sapien rhoncus, nec volutpat purus ultricies.
-          </p>
-        </div>
-        <div
-          className={cn("border rounded-md p-4 max-w-md")}
-          style={{
-            backgroundColor: colorMap[color],
-          }}
-        >
-          <p className="text-xl">Task 1</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            tristique elit eget sapien rhoncus, nec volutpat purus ultricies.
-          </p>
-        </div>
+        {recentObjects.map((object) => {
+          if (!object) return null;
+          return (
+            <div
+              key={object.id}
+              className={cn("border rounded-md p-4 flex-1")}
+              style={{
+                backgroundColor: colorMap[color],
+              }}
+            >
+              <p className="text-xl">{object.title}</p>
+              <p>{object.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {/* Last updated: {new Date(object.updatedAt).toLocaleString()} */}
+              </p>
+            </div>
+          );
+        })}
       </div>
       <div className="flex items-center w-full gap-2">
         <p className="flex gap-2 shrink-0 mr-2 font-light">

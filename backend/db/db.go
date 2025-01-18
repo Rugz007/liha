@@ -44,25 +44,8 @@ func InitDB(log *zap.Logger) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// Load the SQLite extension
-	if err = LoadExtension(db); err != nil {
-		log.Sugar().Fatalf("Failed to load extension: %v", err)
-		return nil, err
-	}
-
 	fmt.Println("Connected to the database successfully!")
 	return db, nil
-}
-
-func LoadExtension(db *sql.DB) error {
-	extension := "crsqlite.dylib"
-	_, err := db.Exec(fmt.Sprintf("SELECT load_extension('%s', 'sqlite3_crsqlite_init')", extension))
-	if err != nil {
-		log.Fatalf("Failed to load extension: %v", err)
-		return err
-	}
-	log.Print("Loaded extension successfully!")
-	return nil
 }
 
 // CloseDB closes the database connection

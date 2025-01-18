@@ -1,6 +1,6 @@
 CREATE TABLE
   IF NOT EXISTS object_type (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     color TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE
 
 CREATE TABLE
   IF NOT EXISTS property_type (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     type TEXT NOT NULL, -- ENUM-like behavior can be handled in the application
     name TEXT NOT NULL,
     ai_automated BOOLEAN NOT NULL DEFAULT FALSE,
@@ -25,7 +25,7 @@ CREATE TABLE
 
 CREATE TABLE
   IF NOT EXISTS object (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     page_customization TEXT,
@@ -37,7 +37,7 @@ CREATE TABLE
 
 CREATE TABLE
   IF NOT EXISTS property (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     object_id TEXT REFERENCES object (id) ON DELETE CASCADE, -- Foreign key to object
     property_type_id TEXT REFERENCES property_type (id) ON DELETE CASCADE, -- Foreign key to property_type
     value TEXT,
@@ -49,7 +49,7 @@ CREATE TABLE
 
 CREATE TABLE
   IF NOT EXISTS collection (
-    id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     object_type_id TEXT REFERENCES object_type (id) ON DELETE CASCADE, -- Foreign key to object_type
@@ -75,7 +75,7 @@ BEGIN
 END;
 
 CREATE TABLE IF NOT EXISTS conversation (
-  id TEXT PRIMARY KEY,
+  id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS conversation (
 );
 
 CREATE TABLE IF NOT EXISTS message (
-  id TEXT PRIMARY KEY,
+  id TEXT PRIMARY KEY NOT NULL,
   conversation_id TEXT REFERENCES conversation (id) ON DELETE CASCADE,
   role TEXT NOT NULL,
   content TEXT NOT NULL,

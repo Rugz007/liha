@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Separator } from "../../../ui/separator";
-import { Button } from "../../../ui/button";
+import { Separator } from "../../ui/separator";
+import { Button } from "../../ui/button";
 import {
   Bot,
   LucideCuboid,
@@ -11,13 +11,22 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useSendMessage, useMessageStore } from "@/store/chatStore";
-import { useTabsState } from "../../../../store/layoutStore";
+import { useLLMSettings, useTabsState } from "../../../store/miscStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "../../ui/dialog";
+import ChatSettings from "./chat-settings";
 
 const chat = () => {
   const { messages, addMessage } = useMessageStore();
   const { createTab } = useTabsState();
   const [inputValue, setInputValue] = useState("");
-  const sendMessage = useSendMessage();
+  const { modelName, llmProvider } = useLLMSettings();
+  const { tabsState } = useTabsState();
+  const sendMessage = useSendMessage(tabsState.activeTab ?? "");
   return (
     <div
       className="flex flex-col px-4 gap-1 py-4 justify-between"
@@ -29,11 +38,27 @@ const chat = () => {
         <div>
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Ask Lekha</p>
-            <Button size={"iconSm"} variant={"outline"}>
-              <LucideSettings2 size={14} />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size={"iconSm"} variant={"outline"}>
+                  <LucideSettings2 size={14} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  AI Chat Settings{" "}
+                  <p className="text-sm text-muted-foreground">
+                    Note: The settings here auto-save
+                  </p>
+                </DialogHeader>
+                <ChatSettings />
+              </DialogContent>
+            </Dialog>
           </div>
-          <p className="text-muted-foreground text-sm">Using LM Studio - Llama 3.3</p>
+          <p className="text-muted-foreground text-sm">
+            Using {llmProvider === "lm_studio" ? "LM Studio" : "Open AI"} -{" "}
+            {modelName}
+          </p>
         </div>
         <Separator />
         <div className="h-full overflow-x-clip overflow-y-scroll">
@@ -94,12 +119,14 @@ const chat = () => {
           value={inputValue}
           onKeyUp={(e) => {
             if (e.key === "Enter") {
-              sendMessage({
-                id: messages.length + 1,
-                role: "user",
-                content: inputValue,
-                timestamp: "Just now",
-              });
+              sendMessage(
+                {
+                  id: messages.length + 1,
+                  role: "user",
+                  content: inputValue,
+                  timestamp: "Just now",
+                }
+              );
               setInputValue("");
             }
           }}
@@ -108,12 +135,14 @@ const chat = () => {
         />
         <Button
           onClick={() => {
-            sendMessage({
-              id: messages.length + 1,
-              role: "user",
-              content: inputValue,
-              timestamp: "Just now",
-            });
+            sendMessage(
+              {
+                id: messages.length + 1,
+                role: "user",
+                content: inputValue,
+                timestamp: "Just now",
+              }
+            );
             setInputValue("");
           }}
         >
