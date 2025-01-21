@@ -55,7 +55,8 @@ const ObjectInstanceSchema = z.strictObject({
     backgroundImage: z.string().default(""),
     defaultFont: z.string().default("ui-sans-serif"),
     freeDrag: z.boolean().default(false),
-  })
+  }),
+  pinned: z.boolean().default(false),
 });
 
 type ObjectInstance = z.infer<typeof ObjectInstanceSchema>;
@@ -74,6 +75,7 @@ const DEFAULT_OBJECT: ObjectInstance = {
     defaultFont: "ui-sans-serif",
     freeDrag: false,
   },
+  pinned: false,
 };
 
 function useCreateObject() {
@@ -116,7 +118,7 @@ function useAllObjectsIDs() {
 
 function useRecentObjectIDs(objectType: string) {
   return useQuery<string[]>({
-    queryKey: ["objects"],
+    queryKey: ["objects", objectType, "recent"],
     queryFn: async () => {
       const result = await GetRecentObjectsofType(objectType);
       if (result) {
@@ -154,10 +156,12 @@ function useObjectsOfType(type: string) {
   const { data: allObjectIDs } = useAllObjectsIDs();
   const allObjectsQueries = useAllObjects(allObjectIDs);
   const allObjects = allObjectsQueries.map((query) => query.data);
-  const filteredObjects =  allObjects.filter((object) => object && object.type === type);
+  const filteredObjects = allObjects.filter(
+    (object) => object && object.type === type
+  );
   return filteredObjects as ObjectInstance[];
 }
-``
+``;
 function useObject(id: string) {
   return useQueryWrapper<ObjectInstance>({
     queryKey: ["object", id],

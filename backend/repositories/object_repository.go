@@ -54,7 +54,7 @@ func (r *ObjectRepository) GetObject(objectID string) (models.Object, error) {
 	var object models.Object
 	var pageCustomizationJSON, contentsJSON string
 	err = tx.QueryRow(
-		"SELECT id, name, description, object_type_id, page_customization, contents FROM object WHERE id = ?",
+		"SELECT id, name, description, object_type_id, page_customization, contents, pinned FROM object WHERE id = ?",
 		objectID,
 	).Scan(
 		&object.ID,
@@ -63,6 +63,7 @@ func (r *ObjectRepository) GetObject(objectID string) (models.Object, error) {
 		&object.ObjectTypeID,
 		&pageCustomizationJSON,
 		&contentsJSON,
+		&object.Pinned,
 	)
 	if err != nil {
 		return models.Object{}, err
@@ -225,8 +226,8 @@ func (r *ObjectRepository) UpdateObject(object *models.Object, propertyTypes *[]
 	}
 
 	_, err = tx.Exec(
-		"UPDATE object SET name = ?, description = ?, object_type_id = ?, page_customization = ?, contents = ? WHERE id = ?",
-		object.Name, object.Description, object.ObjectTypeID, string(pageCustomizationJSON), string(contentJSON), object.ID,
+		"UPDATE object SET name = ?, description = ?, object_type_id = ?, page_customization = ?, contents = ?, pinned = ? WHERE id = ?",
+		object.Name, object.Description, object.ObjectTypeID, string(pageCustomizationJSON), string(contentJSON), object.Pinned, object.ID,
 	)
 	if err != nil {
 		tx.Rollback()
@@ -374,6 +375,10 @@ func (r *ObjectRepository) GetRecentObjectsOfType(objectType string) ([]string, 
 			return nil, err
 		}
 		objectIDs = append(objectIDs, objectID)
+	}
+
+	if len(objectIDs) == 0 {
+		return objectIDs, nil
 	}
 
 	err = tx.Commit()

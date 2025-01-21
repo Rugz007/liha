@@ -58,6 +58,7 @@ function useCreateTag() {
         freeDrag: false,
       },
       aiReady: false,
+      pinned: false,
     };
     await create(newId, newTag);
   };

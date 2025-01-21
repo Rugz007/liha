@@ -32,7 +32,8 @@ CREATE TABLE
     contents TEXT,
     object_type_id TEXT REFERENCES object_type (id) ON DELETE CASCADE, -- Foreign key to object_type
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    pinned BOOLEAN DEFAULT FALSE
   );
 
 CREATE TABLE

@@ -12,6 +12,7 @@ type Object struct {
 	Contents          map[string]Content  `json:"contents,omitempty" db:"-"`          // derived field
 	PageCustomization PageCustomization   `json:"pageCustomization,omitempty" db:"-"` // derived field
 	Properties        map[string]Property `json:"properties,omitempty" db:"-"`        // derived field
+	Pinned            bool                `json:"pinned" db:"pinned"`
 }
 
 type Content struct {

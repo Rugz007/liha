@@ -129,6 +129,14 @@ const ObjectDashboard: React.FC<ObjectDashboardProps> = ({ tabId }) => {
             </div>
           );
         })}
+        {recentObjects.length === 0 && (
+          <div className="flex-1 flex items-center justify-center">
+
+            <p className="text-lg text-muted-foreground">
+              No recent {objectType.name}
+            </p>
+          </div>
+        )}
       </div>
       <div className="flex items-center w-full gap-2">
         <p className="flex gap-2 shrink-0 mr-2 font-light">

@@ -124,18 +124,17 @@ const ObjectContent = ({ tabId }: { tabId: string }) => {
                 size={"iconSm"}
                 className="text-muted-foreground"
                 onClick={() => {
-                  // const newObject = produce(object, (draft) => {
-                  //   draft.pinned = !draft.pinned;
-                  // });
-                  // mutate(newObject);
+                  const newObject = produce(object, (draft) => {
+                    draft.pinned = !draft.pinned;
+                  });
+                  mutate(newObject);
                 }}
               >
-                {/* {object.pinned ? (
+                {object.pinned ? (
                   <LucidePin size={18} />
                 ) : (
                   <LucidePinOff size={18} />
-                )} */}
-                <LucidePinOff size={18} />
+                )}
               </Button>
               <Input
                 variant="ghost"

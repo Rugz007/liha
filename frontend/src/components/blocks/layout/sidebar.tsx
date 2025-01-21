@@ -55,6 +55,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueries } from "@tanstack/react-query";
+import { useMemo } from "react";
 const colorMap: {
   [key: string]: string;
 } = {
@@ -77,12 +78,18 @@ const Sidebar = () => {
   const allObjectTypes = allObjectTypesQueries.map(
     (query) => query.data
   ) as ObjectType[];
+
   const { data: objectIDs } = useAllObjectsIDs();
   const allObjectQueries = useAllObjects(objectIDs);
   const allObjects = allObjectQueries.map(
     (query) => query.data
   ) as ObjectInstance[];
-  // const pinnedObjects = allObjects?.filter((object) => object?.pinned);
+
+  const pinnedObjects = useMemo(
+    () => allObjects.filter((object) => object?.pinned),
+    [allObjects]
+  );
+
   const createObject = useCreateObject();
   const objectTypeQueries = useQueries({
     queries: tabsState.tabs.map((tab) => ({
@@ -180,7 +187,7 @@ const Sidebar = () => {
         .find((objectType) => objectType?.id === objectTypeId)
         ?.color?.split("-")[0] ?? "gray"
     ];
-  }
+  };
 
   return (
     <div className="h-full flex flex-col gap-4 px-3 py-2 disable-select bg-muted">
@@ -221,24 +228,63 @@ const Sidebar = () => {
       <div className="flex items-center gap-2 px-2 text-sm text-muted-foreground">
         <LucidePin size={15} /> Pinned Tabs
       </div>
-      <div className="w-full px-2 pr-4">
-        {/* {pinnedObjects &&
-          pinnedObjects.map((object) => {
-            if (!object) return null;
-            return (
-              <Button
-                key={object.id}
-                variant="ghost"
-                size={"iconSm"}
-                className="text-sm h-fit text-muted-foreground w-full justify-start pl-4 rounded-none"
-                onClick={() => {
-                  createTab(object.id, "object");
-                }}
-              >
-                {object.title}
-              </Button>
-            );
-          })} */}
+      <div className="w-full ">
+        <Tabs className="h-full" value={tabsState.activeTab ?? ""}>
+          <TabsList
+            className={
+              "h-[4%] px-2 draggable w-full justify-start flex flex-col  "
+            }
+          >
+            <AnimatePresence initial={false}>
+              {pinnedObjects.map((object) => (
+                <TabsTrigger
+                  key={object.id}
+                  value={object.id}
+                  onClick={() => {
+                    // Check if object id is in tab state
+                    if (tabsState.tabs.find((tab) => tab.id === object.id)) {
+                      if (object.id !== activeTab) setActiveTab(object.id);
+                    } else {
+                      createTab(object.id, "object");
+                    }
+                  }}
+                  className={cn(
+                    "flex gap-2 w-full justify-between items-center group rounded-lg"
+                  )}
+                  style={{
+                    boxShadow:
+                      object.id === activeTab
+                        ? `0 1px 6px 2px ${getColor(object.id)}88`
+                        : undefined,
+                  }}
+                >
+                  <motion.div
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className={"flex gap-2 w-full justify-between items-center"}
+                  >
+                    {object.title}
+                    {/* TODO: Add removing pins */}
+                    {/* <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // if (tab.type === "createObjectType") {
+                        //   setDialogOpen(true);
+                        //   return;
+                        // }
+                        removeTab(object.id);
+                      }}
+                      variant={"invisible"}
+                      className="hover:text-muted-foreground opacity-0 group-hover:opacity-100 h-6 w-6 p-0 hover:shadow-inner transition-opacity ease-linear duration-100"
+                    >
+                      <LucideX size={12} />
+                    </Button> */}
+                  </motion.div>
+                </TabsTrigger>
+              ))}
+            </AnimatePresence>
+          </TabsList>
+        </Tabs>
       </div>
 
       <div className="w-full flex flex-col gap-2 ">
@@ -252,71 +298,81 @@ const Sidebar = () => {
             }
           >
             <AnimatePresence initial={false}>
-              {tabsState.tabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.id}
-                  value={tab.id}
-                  onClick={() => {
-                    if (tab.id !== activeTab) setActiveTab(tab.id);
-                  }}
-                  className={cn(
-                    "flex gap-2 w-full justify-between items-center group rounded-lg"
-                  )}
-                  style={{
-                    // Add box shadow color here
-                    boxShadow:
-                      tab.id === activeTab
-                        ? tab.type === "objectType"
-                          ? `0 1px 6px 2px ${getColor(tab.id)}88`
-                          : tab.type === "object"
-                          ? `0 1px 6px 2px ${getColor(tab.id)}88`
-                          : undefined
-                        : undefined,
-                  }}
-                >
-                  <motion.div
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className={"flex gap-2 w-full justify-between items-center"}
-                  >
-                    {tab.type === "createObjectType" ? (
-                      "Create Object Type"
-                    ) : tab.type === "object" ? (
-                      <>
-                        {objectTitles.find((object) => object?.id === tab.id)
-                          ?.title || "Untitled"}
-                      </>
-                    ) : tab.type === "todoList" ? (
-                      "To do List"
-                    ) : tab.type === "inbox" ? (
-                      "Inbox"
-                    ) : tab.type === "objectType" ? (
-                      <>
-                        {objectTypeTitles.find(
-                          (objectType) => objectType?.id === tab.id
-                        )?.name || "Untitled"}{" "}
-                        Overview
-                      </>
-                    ) : (
-                      "Untitled"
+              {tabsState.tabs.map((tab) => {
+                if (
+                  tab.type === "object" &&
+                  pinnedObjects.find((object) => object.id === tab.id)
+                ) {
+                  return null;
+                }
+                return (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    onClick={() => {
+                      if (tab.id !== activeTab) setActiveTab(tab.id);
+                    }}
+                    className={cn(
+                      "flex gap-2 w-full justify-between items-center group rounded-lg"
                     )}
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // if (tab.type === "createObjectType") {
-                        //   setDialogOpen(true);
-                        //   return;
-                        // }
-                        removeTab(tab.id);
-                      }}
-                      variant={"invisible"}
-                      className="hover:text-muted-foreground opacity-0 group-hover:opacity-100 h-6 w-6 p-0 hover:shadow-inner transition-opacity ease-linear duration-100"
+                    style={{
+                      // Add box shadow color here
+                      boxShadow:
+                        tab.id === activeTab
+                          ? tab.type === "objectType"
+                            ? `0 1px 6px 2px ${getColor(tab.id)}88`
+                            : tab.type === "object"
+                            ? `0 1px 6px 2px ${getColor(tab.id)}88`
+                            : undefined
+                          : undefined,
+                    }}
+                  >
+                    <motion.div
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className={
+                        "flex gap-2 w-full justify-between items-center"
+                      }
                     >
-                      <LucideX size={12} />
-                    </Button>
-                  </motion.div>
-                </TabsTrigger>
-              ))}
+                      {tab.type === "createObjectType" ? (
+                        "Create Object Type"
+                      ) : tab.type === "object" ? (
+                        <>
+                          {objectTitles.find((object) => object?.id === tab.id)
+                            ?.title || "Untitled"}
+                        </>
+                      ) : tab.type === "todoList" ? (
+                        "To do List"
+                      ) : tab.type === "inbox" ? (
+                        "Inbox"
+                      ) : tab.type === "objectType" ? (
+                        <>
+                          {objectTypeTitles.find(
+                            (objectType) => objectType?.id === tab.id
+                          )?.name || "Untitled"}{" "}
+                          Overview
+                        </>
+                      ) : (
+                        "Untitled"
+                      )}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // if (tab.type === "createObjectType") {
+                          //   setDialogOpen(true);
+                          //   return;
+                          // }
+                          removeTab(tab.id);
+                        }}
+                        variant={"invisible"}
+                        className="hover:text-muted-foreground opacity-0 group-hover:opacity-100 h-6 w-6 p-0 hover:shadow-inner transition-opacity ease-linear duration-100"
+                      >
+                        <LucideX size={12} />
+                      </Button>
+                    </motion.div>
+                  </TabsTrigger>
+                );
+              })}
             </AnimatePresence>
           </TabsList>
         </Tabs>
