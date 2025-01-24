@@ -129,7 +129,9 @@ function useRecentObjectIDs(objectType: string) {
   });
 }
 
-function useAllObjects(ids: string[] | undefined) {
+function useAllObjects(
+  ids: string[] | undefined,
+) {
   const objectQueries = useQueries<UseQueryOptions<ObjectInstance>[]>({
     queries: ids
       ? ids.map((id) => ({
@@ -146,6 +148,33 @@ function useAllObjects(ids: string[] | undefined) {
           },
           retry: 0,
           enabled: !!id,
+        }))
+      : [],
+  });
+  return objectQueries;
+}
+
+function useAllObjectsWithSelect(
+  ids: string[] | undefined,
+  select: (data: ObjectInstance) => ObjectInstance
+) {
+  const objectQueries = useQueries<UseQueryOptions<ObjectInstance>[]>({
+    queries: ids
+      ? ids.map((id) => ({
+          queryKey: ["object", "sidebar", id],
+          queryFn: async () => {
+            const data = await GetObject(id);
+            const result = ObjectInstanceSchema.safeParse(JSON.parse(data));
+            if (result.success) {
+              return select(result.data);
+            } else {
+              console.error(result.error.errors);
+              throw result.error.errors;
+            }
+          },
+          retry: 0,
+          enabled: !!id,
+          select: select,
         }))
       : [],
   });
@@ -202,7 +231,7 @@ function useDefaultFont(id: string) {
     mutate(newData);
   };
   return {
-    defaultFont: data?.pageCustomization.defaultFont ?? "ui-sans-serif",
+    defaultFont: data?.pageCustomization?.defaultFont ?? "ui-sans-serif",
     setDefaultFont,
   };
 }
@@ -219,7 +248,7 @@ function useBackgroundColor(id: string) {
     mutate(newData);
   };
   return {
-    backgroundColor: data?.pageCustomization.backgroundColor ?? "",
+    backgroundColor: data?.pageCustomization?.backgroundColor ?? "",
     setBackgroundColor,
   };
 }
@@ -237,5 +266,6 @@ export {
   useBackgroundColor,
   useObjectsOfType,
   useRecentObjectIDs,
+  useAllObjectsWithSelect,
   DEFAULT_OBJECT,
 };

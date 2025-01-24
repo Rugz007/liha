@@ -41,6 +41,7 @@ import {
   ObjectInstance,
   useAllObjects,
   useAllObjectsIDs,
+  useAllObjectsWithSelect,
   useCreateObject,
 } from "@/store/objectsStore";
 import { ObjectType } from "@/types/objectTypes";
@@ -70,6 +71,7 @@ const colorMap: {
 };
 
 const Sidebar = () => {
+  
   const { createTab, tabsState, removeTab, setActiveTab } = useTabsState();
   const { setSidebarOpen } = useSidebarState();
   const { addObjectType } = useObjectTypesUnsavedStore();
@@ -80,7 +82,14 @@ const Sidebar = () => {
   ) as ObjectType[];
 
   const { data: objectIDs } = useAllObjectsIDs();
-  const allObjectQueries = useAllObjects(objectIDs);
+  const allObjectQueries = useAllObjectsWithSelect(objectIDs, (object) => {
+    return {
+      id: object.id,
+      title: object.title,
+      type: object.type,
+      pinned: object.pinned,
+    } as ObjectInstance;
+  });
   const allObjects = allObjectQueries.map(
     (query) => query.data
   ) as ObjectInstance[];

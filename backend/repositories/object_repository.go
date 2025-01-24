@@ -66,6 +66,9 @@ func (r *ObjectRepository) GetObject(objectID string) (models.Object, error) {
 		&object.Pinned,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return models.Object{}, nil
+		}
 		return models.Object{}, err
 	}
 
