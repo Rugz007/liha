@@ -1,9 +1,9 @@
 import { GripVertical } from "lucide-react"
 import * as ResizablePrimitive from "react-resizable-panels"
-
+import { memo } from "react"
 import { cn } from "@/lib/utils"
 
-const ResizablePanelGroup = ({
+const ResizablePanelGroup = memo(({
   className,
   ...props
 }: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
@@ -14,11 +14,13 @@ const ResizablePanelGroup = ({
     )}
     {...props}
   />
-)
+))
+ResizablePanelGroup.displayName = "ResizablePanelGroup"
 
-const ResizablePanel = ResizablePrimitive.Panel
+const ResizablePanel = memo(ResizablePrimitive.Panel)
+ResizablePanel.displayName = "ResizablePanel"
 
-const ResizableHandle = ({
+const ResizableHandle = memo(({
   withHandle,
   className,
   ...props
@@ -38,6 +40,7 @@ const ResizableHandle = ({
       </div>
     )}
   </ResizablePrimitive.PanelResizeHandle>
-)
+))
+ResizableHandle.displayName = "ResizableHandle"
 
 export { ResizablePanelGroup, ResizablePanel, ResizableHandle }

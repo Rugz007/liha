@@ -1,13 +1,6 @@
 import { GripVertical, LucideSettings2 } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { ObjectInstance, ObjectContent } from "@/store/objectsStore";
 import { produce } from "immer";
 import {
@@ -23,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Separator } from "../../../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 interface ImageBlockProps {
   object: ObjectInstance;

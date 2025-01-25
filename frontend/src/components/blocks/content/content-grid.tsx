@@ -73,7 +73,7 @@ const ContentGrid = ({
         mutate(newObject);
       }}
       width={window.innerWidth - 40} // Subtracting padding
-      preventCollision={true}
+      preventCollision={false}
       draggableHandle=".drag-handle"
       onLayoutChange={(layout) => {
         const newObject = produce(object, (draft) => {

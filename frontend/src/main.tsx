@@ -12,7 +12,16 @@ import { ThemeProvider } from "./components/theme-provider";
 const container = document.getElementById("root");
 
 const root = createRoot(container!);
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      networkMode: 'always'
+    },
+    mutations: {
+      networkMode: 'always'
+    }
+  }
+});
 
 root.render(
   <React.StrictMode>

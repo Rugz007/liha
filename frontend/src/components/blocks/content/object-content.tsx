@@ -88,6 +88,9 @@ const ObjectContent = ({ tabId }: { tabId: string }) => {
   if (!object) return null;
   if (!objectType) return null;
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div
       className={cn(

@@ -24,7 +24,7 @@ import {
 } from "@remirror/react";
 import "remirror/styles/all.css";
 import "../../../../remirror.css";
-import { forwardRef, useCallback, useImperativeHandle } from "react";
+import { forwardRef, memo, useCallback, useImperativeHandle } from "react";
 import debounce from "lodash/debounce";
 import { ThemeProvider } from "@remirror/react";
 import { Button } from "../../../ui/button";
@@ -143,7 +143,7 @@ const TextEditor = forwardRef<
     <div
       className={cn(
         "h-full rounded-lg bg-background border border-transparent ",
-        freeDrag && "border-border/80 hover:border-border"
+        freeDrag && "border-border/40 hover:border-border"
       )}
     >
       <div className="h-full overflow-y-scroll">
@@ -174,4 +174,4 @@ const TextEditor = forwardRef<
   );
 });
 
-export default TextEditor;
+export default memo(TextEditor);

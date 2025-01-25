@@ -60,7 +60,7 @@
   --rmr-color-table-mark: hsl(var(--muted-foreground));
   --rmr-radius-border: 0;
   --rmr-radius-extra: 0.5rem;
-  --rmr-radius-circle: 50%;
+  --rmr-radius-circle: 20%;
   /* --rmr-font-family-default: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; */
   --rmr-font-family-heading: inherit;
   --rmr-font-family-mono: Menlo, monospace;

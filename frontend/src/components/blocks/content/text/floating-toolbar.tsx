@@ -105,6 +105,7 @@ export const FloatingToolbar: FC<FloatingToolbarProps> = ({
       top: y,
       width,
       height,
+      zIndex: 50,
     }),
     [x, y, width, height]
   );

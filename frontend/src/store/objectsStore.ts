@@ -129,9 +129,7 @@ function useRecentObjectIDs(objectType: string) {
   });
 }
 
-function useAllObjects(
-  ids: string[] | undefined,
-) {
+function useAllObjects(ids: string[] | undefined) {
   const objectQueries = useQueries<UseQueryOptions<ObjectInstance>[]>({
     queries: ids
       ? ids.map((id) => ({
@@ -209,6 +207,28 @@ function useObject(id: string) {
   });
 }
 
+function useObjectWithSelect(
+  id: string,
+  selectionKey: string,
+  select: (data: ObjectInstance) => ObjectInstance
+) {
+  return useQueryWrapper<ObjectInstance>({
+    queryKey: ["object", selectionKey, id],
+    queryFn: async () => {
+      return select(JSON.parse(await GetObject(id)));
+    },
+    editFn: (old: ObjectInstance, newState: ObjectInstance) => {
+      if (JSON.stringify(old) === JSON.stringify(newState)) {
+        return old;
+      }
+      return { ...old, ...newState };
+    },
+    mutateFn: (newState: ObjectInstance) => {
+      return UpdateObject(JSON.stringify(newState));
+    },
+  });
+}
+
 function useDeleteObject() {
   const queryClient = useQueryClient();
   return async (id: string) => {
@@ -267,5 +287,6 @@ export {
   useObjectsOfType,
   useRecentObjectIDs,
   useAllObjectsWithSelect,
+  useObjectWithSelect,
   DEFAULT_OBJECT,
 };
