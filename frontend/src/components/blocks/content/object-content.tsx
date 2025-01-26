@@ -1,19 +1,19 @@
-import { Extensions } from "./text/text-editor";
+import { Extensions } from "@/components/blocks/content/text/text-editor";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "../../ui/resizable";
+} from "@/components/ui/resizable";
 import {
   LucidePanelLeft,
   LucidePanelRight,
   LucidePin,
   LucidePinOff,
 } from "lucide-react";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
-import OptionsSidebar from "./options-siderbar";
-import { Separator } from "../../ui/separator";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import OptionsSidebar from "@/components/blocks/content/options-siderbar";
+import { Separator } from "@/components/ui/separator";
 import { ReactFrameworkOutput } from "@remirror/react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -25,11 +25,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ObjectType } from "@/types/objectTypes";
 import { produce } from "immer";
-import ContentTag from "./content-tags";
+import ContentTag from "@/components/blocks/content/content-tags";
 import { ImperativePanelHandle } from "react-resizable-panels";
-import PropertiesSidebar from "./properties-sidebar";
-import ContentGridMemo from "./content-grid";
-import { Switch } from "../../ui/switch";
+import PropertiesSidebar from "@/components/blocks/content/properties-sidebar";
+import ContentGridMemo from "@/components/blocks/content/content-grid";
 const ObjectContent = ({ tabId }: { tabId: string }) => {
   const {
     data: object,
@@ -37,7 +36,7 @@ const ObjectContent = ({ tabId }: { tabId: string }) => {
     isError,
     isPending,
     isSuccess,
-    isLoading
+    isLoading,
   } = useObject(tabId);
   const objectTypeID = object?.type;
   const { data: objectType } = useQuery<ObjectType>({

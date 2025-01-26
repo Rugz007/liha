@@ -23,7 +23,6 @@ import {
 import { Button } from "../../ui/button";
 import {
   DEFAULT_INBOX_TAB_ID,
-  DEFAULT_TODO_LIST_TAB_ID,
   useSidebarState,
   useTabsState,
 } from "@/store/miscStore";
@@ -39,7 +38,6 @@ import { ModeToggle } from "../../ui/theme-toggle";
 import {
   DEFAULT_OBJECT,
   ObjectInstance,
-  useAllObjects,
   useAllObjectsIDs,
   useAllObjectsWithSelect,
   useCreateObject,
@@ -71,7 +69,6 @@ const colorMap: {
 };
 
 const Sidebar = () => {
-  
   const { createTab, tabsState, removeTab, setActiveTab } = useTabsState();
   const { setSidebarOpen } = useSidebarState();
   const { addObjectType } = useObjectTypesUnsavedStore();
@@ -82,14 +79,18 @@ const Sidebar = () => {
   ) as ObjectType[];
 
   const { data: objectIDs } = useAllObjectsIDs();
-  const allObjectQueries = useAllObjectsWithSelect(objectIDs, (object) => {
-    return {
-      id: object.id,
-      title: object.title,
-      type: object.type,
-      pinned: object.pinned,
-    } as ObjectInstance;
-  });
+  const allObjectQueries = useAllObjectsWithSelect(
+    objectIDs,
+    (object) => {
+      return {
+        id: object.id,
+        title: object.title,
+        type: object.type,
+        pinned: object.pinned,
+      } as ObjectInstance;
+    },
+    "sidebar"
+  );
   const allObjects = allObjectQueries.map(
     (query) => query.data
   ) as ObjectInstance[];
@@ -101,31 +102,32 @@ const Sidebar = () => {
 
   const createObject = useCreateObject();
   const objectTypeQueries = useQueries({
-    queries: tabsState.tabs.map((tab) => ({
-      queryKey: ["objectType", tab.id],
-      select: (data: ObjectType) => {
-        return {
-          id: data.id,
-          name: data.name,
-          color: data.color,
-        };
-      },
-    })),
+    queries: tabsState.tabs
+      .filter((tab) => tab.type === "objectType")
+      .map((tab) => ({
+        queryKey: ["objectType", tab.id],
+        select: (data: ObjectType) => {
+          return {
+            id: data.id,
+            name: data.name,
+            color: data.color,
+          };
+        },
+      })),
   });
 
   const objectTypeTitles = objectTypeQueries.map((query) => query.data);
 
-  const objectsQueries = useQueries({
-    queries: tabsState.tabs.map((tab) => ({
-      queryKey: ["object", tab.id],
-      select: (data: ObjectInstance) => {
-        return {
-          id: data.id,
-          title: data.title,
-        };
-      },
-    })),
-  });
+  const objectsQueries = useAllObjectsWithSelect(
+    tabsState.tabs.filter((tab) => tab.type === "object").map((tab) => tab.id),
+    (object) => {
+      return {
+        id: object.id,
+        title: object.title,
+      } as ObjectInstance;
+    },
+    "tabs"
+  );
   const objectTitles = objectsQueries.map((query) => query.data);
 
   const handleCreateTab = () => {

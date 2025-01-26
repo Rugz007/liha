@@ -1,10 +1,8 @@
 import {
   Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
+  TabsContent
 } from "../components/ui/tabs";
-import { useSidebarState, useTabsState } from "../store/miscStore";
+import { useTabsState } from "../store/miscStore";
 import CreateObjectType from "../components/blocks/CreateObjectType";
 import {
   Dialog,
@@ -16,46 +14,13 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
-import { LucidePanelLeftOpen, LucidePin, LucideX } from "lucide-react";
 import ObjectContent from "../components/blocks/content/object-content";
-import { useQueries } from "@tanstack/react-query";
-import { ObjectInstance } from "../store/objectsStore";
-import { cn } from "../lib/utils";
-import { AnimatePresence, motion } from "framer-motion";
-import { ObjectType } from "../types/objectTypes";
 import ObjectDashboard from "../components/blocks/ObjectDashboard";
 // import ToDoList from "../components/blocks/content/todolist/todolist";
 const Content = () => {
-  const { tabsState, setActiveTab, removeTab } = useTabsState();
+  const { tabsState, removeTab } = useTabsState();
   const activeTab = tabsState.activeTab;
   const [dialogOpen, setDialogOpen] = useState(false);
-  const objectTypeQueries = useQueries({
-    queries: tabsState.tabs.map((tab) => ({
-      queryKey: ["objectType", tab.id],
-      select: (data: ObjectType) => {
-        return {
-          id: data.id,
-          name: data.name,
-        };
-      },
-    })),
-  });
-
-  const objectsQueries = useQueries({
-    queries: tabsState.tabs.map((tab) => ({
-      queryKey: ["object", tab.id],
-      select: (data: ObjectInstance) => {
-        return {
-          id: data.id,
-          title: data.title,
-        };
-      },
-    })),
-  });
-  const { setSidebarOpen, isSidebarOpen } = useSidebarState();
-
-  const objectTitles = objectsQueries.map((query) => query.data);
-  const objectTypeTitles = objectTypeQueries.map((query) => query.data);
   return (
     <div
       className="py-1"

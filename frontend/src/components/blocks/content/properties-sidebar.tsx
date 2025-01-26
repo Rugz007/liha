@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useObject, useObjectWithSelect } from "@/store/objectsStore";
+import { useObjectWithSelect } from "@/store/objectsStore";
 import { useQuery } from "@tanstack/react-query";
 import { ObjectType } from "../../../types/objectTypes";
 import { Button } from "../../ui/button";
