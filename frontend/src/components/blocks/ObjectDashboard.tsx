@@ -139,10 +139,10 @@ const ObjectDashboard: React.FC<ObjectDashboardProps> = ({ tabId }) => {
         )}
       </div>
       <div className="flex items-center w-full gap-2">
-        <p className="flex gap-2 shrink-0 mr-2 font-light">
+        <span className="flex gap-2 shrink-0 mr-2 font-light">
           {objectType?.name}
           <Badge className={cn(`bg-${objectType.color}`)}>123</Badge>
-        </p>
+        </span>
         <Separator className="flex-1" />
         <Button variant={"ghost"} size={"iconSm"}>
           <LucideSettings2 size={14} />
@@ -193,6 +193,7 @@ const ObjectDashboard: React.FC<ObjectDashboardProps> = ({ tabId }) => {
                 placeholder="Untitled Collection"
                 className="w-[30%]"
                 value={"All " + objectType.name}
+                readOnly //TODO: Temporary warning removal
               />
             </TabsContent>
           </ResizablePanel>

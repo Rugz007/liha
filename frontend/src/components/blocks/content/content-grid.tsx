@@ -108,7 +108,6 @@ const ContentGrid = ({
                   defaultFont={defaultFont}
                   contentKey={key}
                   mutate={mutate}
-                  key={key}
                   onBlur={() =>
                     activeTextBlock === key
                       ? () => setActiveTextBlock(null)

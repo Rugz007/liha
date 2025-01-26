@@ -3,9 +3,7 @@ package handlers
 import (
 	"app/backend/models"
 	"app/backend/repositories"
-	"app/backend/util"
 
-	"github.com/adrg/xdg"
 	"go.uber.org/zap"
 )
 
@@ -19,15 +17,6 @@ func NewObjectHandler(
 	propertyTypeRepository *repositories.PropertyTypeRepository,
 ) *ObjectHandler {
 	return &ObjectHandler{objectRepository, propertyTypeRepository}
-}
-
-// DEPRECATED
-func getObjectFilePath(objectID string) (string, error) {
-	filepath, err := xdg.DataFile("liha/objects/" + objectID + ".json")
-	if err != nil {
-		return "", err
-	}
-	return filepath, nil
 }
 
 func (o *ObjectHandler) GetAllObjectIDs(logger *zap.Logger) ([]string, error) {
@@ -81,33 +70,6 @@ func (o *ObjectHandler) UpdateObject(object *models.Object, logger *zap.Logger) 
 
 func (o *ObjectHandler) GetRepository() *repositories.ObjectRepository {
 	return o.objectRepository
-}
-
-func ReadObjectFile(objectID string, logger *zap.Logger) (string, error) {
-	path, err := getObjectFilePath(objectID)
-	if err != nil {
-		logger.Error("Error getting object file path", zap.Error(err))
-		return "", err
-	}
-	return util.ReadJSONFile(path, logger)
-}
-
-func WriteObjectFile(objectID string, object string, logger *zap.Logger) error {
-	path, err := getObjectFilePath(objectID)
-	if err != nil {
-		logger.Error("Error getting object file path", zap.Error(err))
-		return err
-	}
-	return util.WriteJSONFile(path, object, logger)
-}
-
-func DeleteObjectFile(objectID string, logger *zap.Logger) error {
-	path, err := getObjectFilePath(objectID)
-	if err != nil {
-		logger.Error("Error getting object file path", zap.Error(err))
-		return err
-	}
-	return util.DeleteFile(path, logger)
 }
 
 func (o *ObjectHandler) GetRecentObjectsOfType(objectTypeID string, logger *zap.Logger) ([]string, error) {

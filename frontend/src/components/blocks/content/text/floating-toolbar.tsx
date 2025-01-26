@@ -44,7 +44,7 @@ const BubbleMenu = ({
   anchorEl: HTMLDivElement | null;
   active: boolean;
 }) => {
-  const { toggleBold } = useCommands<BoldExtension>();
+  const { toggleBold, toggleUnderline, toggleItalic } = useCommands();
 
   return (
     <>
@@ -73,10 +73,22 @@ const BubbleMenu = ({
             >
               <LucideBold size={16} />
             </Button>
-            <Button variant={"ghost"} size="xs">
+            <Button
+              variant={"ghost"}
+              size="xs"
+              onClick={(e) => {
+                toggleItalic();
+              }}
+            >
               <LucideItalic size={16} />
             </Button>
-            <Button variant={"ghost"} size="xs">
+            <Button
+              variant={"ghost"}
+              size="xs"
+              onClick={(e) => {
+                toggleUnderline();
+              }}
+            >
               <LucideUnderline size={16} />
             </Button>
           </div>

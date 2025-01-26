@@ -2,7 +2,6 @@ import {
   CreateObjectType,
   GetAllObjectTypeFiles,
   ReadObjectTypeFile,
-  WriteObjectTypeFile,
 } from "../../wailsjs/go/main/App";
 import {
   useMutation,
@@ -74,7 +73,8 @@ function useUpdateObjectType(id: string) {
   const { mutate } = useMutation({
     mutationKey: ["updateObjectType", id],
     mutationFn: async (updatedObjectType: string) => {
-      await WriteObjectTypeFile(id, updatedObjectType);
+      //TODO: Fix this
+      //await UpdateObjectType(id, updatedObjectType);
     },
     onMutate: async (updatedObjectType: string) => {
       console.log("onMutate", updatedObjectType);

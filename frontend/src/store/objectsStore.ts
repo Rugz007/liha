@@ -1,7 +1,6 @@
 import { z } from "zod";
 import {
   CreateObject,
-  DeleteObjectFile,
   GetAllObjects,
   GetObject,
   UpdateObject,
@@ -238,13 +237,13 @@ function useObjectWithSelect(
 }
 
 function useDeleteObject() {
-  const queryClient = useQueryClient();
-  return async (id: string) => {
-    await DeleteObjectFile(id);
-    queryClient.invalidateQueries({
-      queryKey: ["objects", "object", id],
-    });
-  };
+  // const queryClient = useQueryClient();
+  // return async (id: string) => {
+  //   await DeleteObjectFile(id);
+  //   queryClient.invalidateQueries({
+  //     queryKey:  ["object", id],
+  //   });
+  // };
 }
 
 function useDefaultFont(id: string) {

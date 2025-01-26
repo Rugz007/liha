@@ -3,7 +3,6 @@ package handlers
 import (
 	"app/backend/models"
 	"app/backend/repositories"
-	"app/backend/util"
 
 	"github.com/adrg/xdg"
 	"go.uber.org/zap"
@@ -81,6 +80,7 @@ func (o *ObjectTypeHandler) UpdateObjectType(objectType *models.ObjectType, logg
 		logger.Error("Error updating object type", zap.Error(err))
 		return err
 	}
+	//TODO:Update property types
 	return nil
 }
 
@@ -91,23 +91,4 @@ func (o *ObjectTypeHandler) DeleteObjectType(objectTypeID string, logger *zap.Lo
 		return err
 	}
 	return nil
-}
-
-// DEPRECATED
-func ReadObjectTypeFile(objectTypeID string, logger *zap.Logger) (string, error) {
-	path, err := getObjectTypeFilePath(objectTypeID)
-	if err != nil {
-		return "", err
-	}
-	return util.ReadJSONFile(path, logger)
-}
-
-// DEPRECATED
-func WriteObjectTypeFile(objectTypeID string, objectType string, logger *zap.Logger) error {
-	path, err := getObjectTypeFilePath(objectTypeID)
-	if err != nil {
-		logger.Error("Error getting object type file path", zap.Error(err))
-		return err
-	}
-	return util.WriteJSONFile(path, objectType, logger)
 }

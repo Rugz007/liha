@@ -1,12 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import {
-  AlignCenter,
-  AlignJustify,
-  AlignLeft,
-  AlignRight,
   Bold,
   BoxSelect,
-  CheckSquare,
   Code,
   ImageIcon,
   Italic,
@@ -494,7 +489,8 @@ const OptionsSidebar = ({
                 variant={"ghost"}
                 onClick={() => {
                   if (tabsState.activeTab) {
-                    deleteObject(tabsState.activeTab);
+                    //TODO: Fix this
+                    //deleteObject(tabsState.activeTab);
                   }
                 }}
               >

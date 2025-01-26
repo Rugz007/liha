@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Separator } from "../../ui/separator";
-import { Button } from "../../ui/button";
+import React, { useState, forwardRef } from "react";
+import { memo } from "react";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import {
   Bot,
   LucideCuboid,
@@ -11,16 +12,16 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useSendMessage, useMessageStore } from "@/store/chatStore";
-import { useLLMSettings, useTabsState } from "../../../store/miscStore";
+import { useLLMSettings, useTabsState } from "@/store/miscStore";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTrigger,
-} from "../../ui/dialog";
-import ChatSettings from "./chat-settings";
+} from "@/components/ui/dialog";
+import ChatSettings from "@/components/blocks/chat/chat-settings";
 
-const chat = () => {
+const Chat = forwardRef<HTMLDivElement, {}>((props, ref) => {
   const { messages, addMessage } = useMessageStore();
   const { createTab } = useTabsState();
   const [inputValue, setInputValue] = useState("");
@@ -29,6 +30,7 @@ const chat = () => {
   const sendMessage = useSendMessage(tabsState.activeTab ?? "");
   return (
     <div
+      ref={ref}
       className="flex flex-col px-4 gap-1 py-4 justify-between"
       style={{
         height: "calc(100vh - 42px)",
@@ -119,14 +121,12 @@ const chat = () => {
           value={inputValue}
           onKeyUp={(e) => {
             if (e.key === "Enter") {
-              sendMessage(
-                {
-                  id: messages.length + 1,
-                  role: "user",
-                  content: inputValue,
-                  timestamp: "Just now",
-                }
-              );
+              sendMessage({
+                id: messages.length + 1,
+                role: "user",
+                content: inputValue,
+                timestamp: "Just now",
+              });
               setInputValue("");
             }
           }}
@@ -135,14 +135,12 @@ const chat = () => {
         />
         <Button
           onClick={() => {
-            sendMessage(
-              {
-                id: messages.length + 1,
-                role: "user",
-                content: inputValue,
-                timestamp: "Just now",
-              }
-            );
+            sendMessage({
+              id: messages.length + 1,
+              role: "user",
+              content: inputValue,
+              timestamp: "Just now",
+            });
             setInputValue("");
           }}
         >
@@ -151,6 +149,6 @@ const chat = () => {
       </div>
     </div>
   );
-};
+});
 
-export default chat;
+export default Chat;

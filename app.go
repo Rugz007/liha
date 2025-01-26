@@ -4,7 +4,6 @@ import (
 	"app/backend/ai"
 	"app/backend/db"
 	"app/backend/handlers"
-	objectsAPI "app/backend/handlers"
 	"app/backend/models"
 	"app/backend/repositories"
 	stateAPI "app/backend/state"
@@ -53,14 +52,6 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) ReadObjectFile(objectID string) (string, error) {
-	data, err := objectsAPI.ReadObjectFile(objectID, a.logger)
-	if err != nil {
-		return "", err
-	}
-	return data, nil
-}
-
 func (a *App) CreateObject(objectJSON string) error {
 	object := &models.Object{}
 	err := json.Unmarshal([]byte(objectJSON), object)
@@ -101,24 +92,6 @@ func (a *App) UpdateObject(objectJSON string) error {
 	err = a.handlers.ObjectHandler.UpdateObject(object, a.logger)
 	if err != nil {
 		a.logger.Error("Error updating object", zap.Error(err))
-		return err
-	}
-	return nil
-}
-
-func (a *App) WriteObjectFile(objectID string, object string) error {
-	err := objectsAPI.WriteObjectFile(objectID, object, a.logger)
-	if err != nil {
-		a.logger.Error("Error writing object file", zap.Error(err))
-		return err
-	}
-	return nil
-}
-
-func (a *App) DeleteObjectFile(objectID string) error {
-	err := objectsAPI.DeleteObjectFile(objectID, a.logger)
-	if err != nil {
-		a.logger.Error("Error deleting object file", zap.Error(err))
 		return err
 	}
 	return nil
@@ -166,15 +139,6 @@ func (a *App) DeleteObjectType(objectTypeID string) error {
 	err := a.handlers.ObjectTypeHandler.DeleteObjectType(objectTypeID, a.logger)
 	if err != nil {
 		a.logger.Error("Error deleting object type", zap.Error(err))
-		return err
-	}
-	return nil
-}
-
-func (a *App) WriteObjectTypeFile(objectTypeID string, objectType string) error {
-	err := objectsAPI.WriteObjectTypeFile(objectTypeID, objectType, a.logger)
-	if err != nil {
-		a.logger.Error("Error writing object type file", zap.Error(err))
 		return err
 	}
 	return nil

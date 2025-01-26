@@ -5,8 +5,6 @@ export function CreateObject(arg1:string):Promise<void>;
 
 export function CreateObjectType(arg1:string):Promise<void>;
 
-export function DeleteObjectFile(arg1:string):Promise<void>;
-
 export function DeleteObjectType(arg1:string):Promise<void>;
 
 export function GetAllObjectTypeFiles():Promise<Array<string>>;
@@ -21,8 +19,6 @@ export function GetRecentObjectsofType(arg1:string):Promise<Array<string>>;
 
 export function GetSummary(arg1:string):Promise<string>;
 
-export function ReadObjectFile(arg1:string):Promise<string>;
-
 export function ReadObjectTypeFile(arg1:string):Promise<string>;
 
 export function ReadStateFile():Promise<string>;
@@ -30,9 +26,5 @@ export function ReadStateFile():Promise<string>;
 export function SendMessage(arg1:string,arg2:string):Promise<string>;
 
 export function UpdateObject(arg1:string):Promise<void>;
-
-export function WriteObjectFile(arg1:string,arg2:string):Promise<void>;
-
-export function WriteObjectTypeFile(arg1:string,arg2:string):Promise<void>;
 
 export function WriteStateFile(arg1:string):Promise<void>;
