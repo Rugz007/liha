@@ -390,7 +390,8 @@ const OptionsSidebar = ({
         <div className="w-full">
           <h3 className="text-sm font-semibold mb-2">BACKGROUND</h3>
           <div className="flex gap-2 w-full">
-            <Tabs defaultValue="none" className="w-full">
+            {/* TODO: Fix this for image */}
+            <Tabs defaultValue={backgroundColor ? 'solid' : 'none'} className="w-full">
               <TabsList className="w-full shadow-inner rounded-md sm:flex-wrap sm:h-fit">
                 <TabsTrigger
                   value="none"
@@ -424,6 +425,7 @@ const OptionsSidebar = ({
                   onChange={(color) => setBackgroundColor(color)}
                 />
               </TabsContent>
+              {/* TODO: Implement Image */}
               <TabsContent value="image">
                 <p>Image background selected.</p>
               </TabsContent>
