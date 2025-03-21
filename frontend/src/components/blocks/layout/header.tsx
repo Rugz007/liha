@@ -8,26 +8,41 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBotSidebarState, useSidebarState } from "@/store/miscStore";
+import { cn } from "../../../lib/utils";
+import { useFullScreen } from "../../../hooks/use-full-screen";
 
-const Header = () => {
-  const { setSidebarOpen, isSidebarOpen } = useSidebarState();
-  const { setBotSidebarOpen, isBotSidebarOpen } = useBotSidebarState();
+interface HeaderProps {
+  setSidebarOpen: (open: boolean) => void;
+  isSidebarOpen: boolean;
+  setBotSidebarOpen: (open: boolean) => void;
+  isBotSidebarOpen: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  setSidebarOpen,
+  isSidebarOpen,
+  setBotSidebarOpen,
+  isBotSidebarOpen,
+}) => {
+  const isFullScreen = useFullScreen();
   return (
-    <div className="flex h-[42px] border-b bg-muted draggable disable-select pl-[100px] pr-[10px] align-middle items-center justify-between">
-      {/* TODO: Add fullscreen position check */}
-      {!isSidebarOpen ? (
-        <Button
-          size={"iconSm"}
-          variant={"outline"}
-          className={isSidebarOpen ? "bg-muted" : ""}
-          onClick={() => setSidebarOpen(true)}
-        >
-          <LucidePanelLeftOpen size={18} />
-        </Button>
-      ) : (
-        <div />
-      )}
-      <div className="flex gap-2 h-full w-1/2 mt-2">
+    <div className="flex relative h-[42px] border-b bg-muted draggable disable-select align-middle items-center justify-between">
+      <Button
+        size={"iconSm"}
+        variant={"outline"}
+        className={cn(
+          "absolute",
+          isSidebarOpen && "bg-muted",
+          !isFullScreen ? "left-[80px]" : "left-[10px]",
+          isSidebarOpen && 'hidden'
+        )}
+        onClick={() => setSidebarOpen(true)}
+      >
+        <LucidePanelLeftOpen size={18} />
+      </Button>
+
+      <div />
+      <div className="flex gap-2 h-full items-center w-1/2">
         <Input
           placeholder="Search through your workspace"
           className="h-8 w-full"

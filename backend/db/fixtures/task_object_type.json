@@ -1,0 +1,48 @@
+{
+    "id": "c7e5ba56-9a07-4a9f-b9b6-0f78334c0591",
+    "name": "Task",
+    "baseType": "task",
+    "description": "A task object representing an item to be completed",
+    "color": "#FF5733",
+    "properties": {
+      "title": {
+        "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+        "type": "text",
+        "name": "Title",
+        "visibility": "visible",
+        "icon": "📝",
+        "defaultValue": "",
+        "isObjectReference": false
+      },
+      "dueDate": {
+        "id": "2b3c4d5e-6789-01ab-cdef-2345678901bc",
+        "type": "date",
+        "format": "date",
+        "name": "Due Date",
+        "visibility": "visible",
+        "icon": "📅",
+        "defaultValue": "2025-01-01T00:00:00.000Z",
+        "isObjectReference": false
+      },
+      "completed": {
+        "id": "3c4d5e6f-7890-12ab-cdef-3456789012cd",
+        "type": "boolean",
+        "name": "Completed",
+        "visibility": "visible",
+        "icon": "✅",
+        "defaultValue": "false",
+        "isObjectReference": false
+      },
+      "referencedObject": {
+        "id": "4d5e6f7a-8901-23ab-cdef-4567890123de",
+        "type": "object",
+        "name": "Referenced Objects",
+        "visibility": "visible",
+        "icon": "🔗",
+        "defaultValue": "",
+        "isObjectReference": true
+      }
+    },
+    "fixed": true
+  }
+  

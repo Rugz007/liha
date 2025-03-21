@@ -9,9 +9,9 @@ import Chat from "../chat/chat";
 const Botbar = () => {
   const { setBotSidebarOpen, isBotSidebarOpen } = useBotSidebarState();
   return (
-    <div className="h-screen">
+    <div className="h-screen border-l border-border">
       <Tabs defaultValue="bot" className="h-full">
-        <TabsList className="w-full h-[42px]  shadow-inner relative rounded-none">
+        <TabsList className="w-full h-[42px]  shadow-inner relative rounded-none border-border border-b">
           <Button
             variant={"invisible"}
             className="absolute left-0 border-r rounded-none"

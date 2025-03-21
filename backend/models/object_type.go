@@ -14,6 +14,7 @@ const (
 	PageObjectType     BaseObjectType = "page"
 	TagObjectType      BaseObjectType = "tag"
 	GoogleCalEventType BaseObjectType = "google_cal_event"
+	TaskObjectType     BaseObjectType = "task"
 )
 
 type ObjectType struct {
@@ -32,7 +33,6 @@ type PropertyType struct {
 	Name              string           `json:"name" db:"name"`
 	AIAutomated       bool             `json:"aiAutomated" db:"ai_automated"`
 	Visibility        string           `json:"visibility" db:"visibility"`
-	Icon              string           `json:"icon" db:"icon"`
 	DefaultValue      string           `json:"defaultValue" db:"default_value"`
 	IsObjectReference bool             `json:"isObjectReference" db:"is_object_reference"`
 	ObjectTypeID      *string          `json:"objectTypeId,omitempty" db:"object_type_id"`

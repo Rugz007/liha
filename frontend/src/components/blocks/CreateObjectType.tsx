@@ -44,6 +44,8 @@ import {
 } from "../ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTabsState } from "../../store/miscStore";
+import PropertyTypeIcon from "../ui/property-type-icon";
+import { cn } from "../../lib/utils";
 const CreateObjectSchema = ObjectTypeSchema.omit({ id: true });
 
 const ColorPicker = ({
@@ -65,13 +67,15 @@ const ColorPicker = ({
   ];
 
   return (
-    <div className="flex space-x-2 py-1 mt-2">
+    <div className="flex flex-shrink-0 space-x-2 py-1 mt-2">
       {colors.map((colorObj) => (
         <button
           key={colorObj.name}
-          className={`w-6 h-6 rounded-full ${colorObj.class} transition-all duration-200 ease-in-out ${
-            color === colorObj.name ? "ring-2 ring-offset-2 ring-gray-400" : ""
-          }`}
+          className={cn(
+            "w-6 h-6 rounded-full transition-all duration-200 ease-in-out",
+            colorObj.class,
+            color === colorObj.name && "ring-2 ring-offset-2 ring-gray-400"
+          )}
           onClick={(e) => {
             e.preventDefault();
             onChange(colorObj.name);
@@ -89,7 +93,7 @@ export default function CreateObjectType(props: { tabID: string }) {
       name: "",
       baseType: "page",
       description: "",
-      color: "",
+      color: "red-500",
       properties: {},
     },
     values: objectTypesMap[props.tabID],
@@ -169,14 +173,16 @@ export default function CreateObjectType(props: { tabID: string }) {
   };
 
   return (
-    <div className="w-full  p-6 h-full space-y-4 bg-background rounded-md shadow-md ">
-      <div className="max-w-3xl mx-auto">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardTitle>Create Object Type</CardTitle>
-            <div className="space-y-4 mt-2">
-              <div className="grid grid-cols-2 gap-4">
-                {/* <FormField
+    <div className=" p-6 h-full w-full flex flex-col gap-4 bg-background items-center rounded-md shadow-md ">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 w-[50%]"
+        >
+          <CardTitle>Create Object Type</CardTitle>
+          <div className="gap-4 flex flex-col mt-2">
+            <div className="flex flex-col gap-4">
+              {/* <FormField
                   control={form.control}
                   name="icon"
                   render={({ field }) => (
@@ -187,142 +193,137 @@ export default function CreateObjectType(props: { tabID: string }) {
                     </FormItem>
                   )}
                 /> */}
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="baseType">Name</FormLabel>
-                      <Input {...field} placeholder="Enter a name" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="color">Color</FormLabel>
-                      <ColorPicker
-                        color={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div>
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="description">Description</FormLabel>
-                      <Textarea
-                        {...field}
-                        placeholder="Enter a description..."
-                      />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit">Create Object Type</Button>
-            </div>
-            <Separator className="my-2" />
-            <p className="text-xl">Edit properties</p>
-            <p className="text-sm text-muted-foreground">
-              Add, remove, and customize the properties of this object type.{" "}
-              <a href="#" className="text-primary hover:underline">
-                Learn more
-              </a>
-              .
-            </p>
-            <div className="space-y-4 h-full py-4 overflow-y-auto max-h-[400px]">
-              {Object.entries(properties).map(([key, prop], index) => (
-                <div key={key} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    {prop.icon}
-                    <Input
-                      value={prop.name}
-                      onChange={(e) => {
-                        setProperties((prev) => {
-                          return produce(prev, (draft) => {
-                            draft[key].name = e.target.value;
-                          });
-                        });
-                      }}
-                      placeholder="Enter a name"
-                      className="border-transparent hover:border-input"
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="baseType">Name</FormLabel>
+                    <Input {...field} placeholder="Enter a name" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="color">Color</FormLabel>
+                    <ColorPicker
+                      color={field.value}
+                      onChange={field.onChange}
                     />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Select
-                      onValueChange={(value) =>
-                        onPropertyTypeChange(key, value as PropertyTypeEnum)
-                      }
-                      value={prop.type}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="text">Text</SelectItem>
-                        <SelectItem value="number">Number</SelectItem>
-                        <SelectItem value="boolean">Boolean</SelectItem>
-                        <SelectItem value="date">Date</SelectItem>
-                        <SelectSeparator />
-                        {allObjectTypes.map((type) => {
-                          if (!type) return;
-                          return (
-                            <SelectItem key={type.id} value={type.id}>
-                              {type.name}
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      <EllipsisVertical size={14} />
-                    </Button>
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onPropertyRemove(key);
-                      }}
-                    >
-                      <LucideX size={14} />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                  </FormItem>
+                )}
+              />
             </div>
-            <Button
-              variant="outline"
-              className="w-full my-2"
-              onClick={(e) => {
-                e.preventDefault();
-                const propertyID = uuid();
-                addProperty(propertyID, {
-                  ...DEFAULT_PROPERTY_VALUE,
-                  id: propertyID,
-                  objectTypeId: props.tabID,
-                });
-              }}
-            >
-              <PlusIcon className="mr-2 h-4 w-4" /> Add property
-            </Button>
-          </form>
-        </Form>
-      </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="description">Description</FormLabel>
+                    <Textarea {...field} placeholder="Enter a description..." />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button type="submit">Create Object Type</Button>
+          </div>
+          <Separator className="my-2" />
+          <p className="text-xl">Edit properties</p>
+          <p className="text-sm text-muted-foreground">
+            Add, remove, and customize the properties of this object type.{" "}
+            <a href="#" className="text-primary hover:underline">
+              Learn more
+            </a>
+            .
+          </p>
+          <div className="space-y-4 h-full py-4 overflow-y-auto max-h-[400px]">
+            {Object.entries(properties).map(([key, prop], index) => (
+              <div key={key} className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <PropertyTypeIcon type={prop.type} />
+                  <Input
+                    value={prop.name}
+                    onChange={(e) => {
+                      setProperties((prev) => {
+                        return produce(prev, (draft) => {
+                          draft[key].name = e.target.value;
+                        });
+                      });
+                    }}
+                    placeholder="Enter a name"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Select
+                    onValueChange={(value) =>
+                      onPropertyTypeChange(key, value as PropertyTypeEnum)
+                    }
+                    value={prop.type}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="text">Text</SelectItem>
+                      <SelectItem value="number">Number</SelectItem>
+                      <SelectItem value="boolean">Boolean</SelectItem>
+                      <SelectItem value="date">Date</SelectItem>
+                      <SelectSeparator />
+                      {allObjectTypes.map((type) => {
+                        if (!type) return;
+                        return (
+                          <SelectItem key={type.id} value={type.id}>
+                            {type.name}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    size={"icon"}
+                    variant={"ghost"}
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <EllipsisVertical size={14} />
+                  </Button>
+                  <Button
+                    size={"icon"}
+                    variant={"ghost"}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onPropertyRemove(key);
+                    }}
+                  >
+                    <LucideX size={14} />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Button
+            variant="outline"
+            className="w-full my-2"
+            onClick={(e) => {
+              e.preventDefault();
+              const propertyID = uuid();
+              addProperty(propertyID, {
+                ...DEFAULT_PROPERTY_VALUE,
+                id: propertyID,
+                objectTypeId: props.tabID,
+              });
+            }}
+          >
+            <PlusIcon className="mr-2 h-4 w-4" /> Add property
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }

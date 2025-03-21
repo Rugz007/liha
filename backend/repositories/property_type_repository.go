@@ -29,8 +29,8 @@ func NewPropertyTypeRepository(db *sql.DB) *PropertyTypeRepository {
 
 func (repo *PropertyTypeRepository) CreatePropertyType(propertyType *models.PropertyType) error {
 	_, err := repo.db.Exec(
-		"INSERT INTO property_type (id, type, name, ai_automated, visibility, icon, default_value, is_object_reference, object_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-		propertyType.ID, propertyType.Type, propertyType.Name, propertyType.AIAutomated, propertyType.Visibility, propertyType.Icon, propertyType.DefaultValue, propertyType.IsObjectReference, propertyType.ObjectTypeID,
+		"INSERT INTO property_type (id, type, name, ai_automated, visibility, default_value, is_object_reference, object_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+		propertyType.ID, propertyType.Type, propertyType.Name, propertyType.AIAutomated, propertyType.Visibility, propertyType.DefaultValue, propertyType.IsObjectReference, propertyType.ObjectTypeID,
 	)
 	return err
 }
@@ -41,7 +41,7 @@ func (repo *PropertyTypeRepository) CreatePropertyTypes(propertyTypes *[]models.
 		return err
 	}
 
-	stmt, err := tx.Prepare("INSERT INTO property_type (id, type, name, ai_automated, visibility, icon, default_value, is_object_reference, object_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)")
+	stmt, err := tx.Prepare("INSERT INTO property_type (id, type, name, ai_automated, visibility, default_value, is_object_reference, object_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)")
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func (repo *PropertyTypeRepository) CreatePropertyTypes(propertyTypes *[]models.
 
 	for _, propertyType := range *propertyTypes {
 
-		_, err := stmt.Exec(propertyType.ID, propertyType.Type, propertyType.Name, propertyType.AIAutomated, propertyType.Visibility, propertyType.Icon, propertyType.DefaultValue, propertyType.IsObjectReference, propertyType.ObjectTypeID)
+		_, err := stmt.Exec(propertyType.ID, propertyType.Type, propertyType.Name, propertyType.AIAutomated, propertyType.Visibility, propertyType.DefaultValue, propertyType.IsObjectReference, propertyType.ObjectTypeID)
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -62,9 +62,9 @@ func (repo *PropertyTypeRepository) CreatePropertyTypes(propertyTypes *[]models.
 func (repo *PropertyTypeRepository) GetPropertyType(propertyTypeID string) (*models.PropertyType, error) {
 	propertyType := &models.PropertyType{}
 	err := repo.db.QueryRow(
-		"SELECT id, type, name, ai_automated, visibility, icon, default_value, is_object_reference, object_type_id FROM property_type WHERE id = $1",
+		"SELECT id, type, name, ai_automated, visibility, default_value, is_object_reference, object_type_id FROM property_type WHERE id = $1",
 		propertyTypeID,
-	).Scan(&propertyType.ID, &propertyType.Type, &propertyType.Name, &propertyType.AIAutomated, &propertyType.Visibility, &propertyType.Icon, &propertyType.DefaultValue, &propertyType.IsObjectReference, &propertyType.ObjectTypeID)
+	).Scan(&propertyType.ID, &propertyType.Type, &propertyType.Name, &propertyType.AIAutomated, &propertyType.Visibility, &propertyType.DefaultValue, &propertyType.IsObjectReference, &propertyType.ObjectTypeID)
 	return propertyType, err
 }
 
@@ -94,7 +94,7 @@ func (repo *PropertyTypeRepository) GetPropertyTypesIDs(filter string) ([]string
 }
 
 func (repo *PropertyTypeRepository) GetPropertyTypesOfObjectType(objectID string) (*[]models.PropertyType, error) {
-	query := "SELECT id, type, name, ai_automated, visibility, icon, default_value, is_object_reference, object_type_id FROM property_type WHERE object_type_id = $1"
+	query := "SELECT id, type, name, ai_automated, visibility, default_value, is_object_reference, object_type_id FROM property_type WHERE object_type_id = $1"
 
 	rows, err := repo.db.Query(query, objectID)
 	if err != nil {
@@ -105,7 +105,7 @@ func (repo *PropertyTypeRepository) GetPropertyTypesOfObjectType(objectID string
 	propertyTypes := make([]models.PropertyType, 0)
 	for rows.Next() {
 		var propertyType models.PropertyType
-		err := rows.Scan(&propertyType.ID, &propertyType.Type, &propertyType.Name, &propertyType.AIAutomated, &propertyType.Visibility, &propertyType.Icon, &propertyType.DefaultValue, &propertyType.IsObjectReference, &propertyType.ObjectTypeID)
+		err := rows.Scan(&propertyType.ID, &propertyType.Type, &propertyType.Name, &propertyType.AIAutomated, &propertyType.Visibility, &propertyType.DefaultValue, &propertyType.IsObjectReference, &propertyType.ObjectTypeID)
 		if err != nil {
 			return nil, err
 		}

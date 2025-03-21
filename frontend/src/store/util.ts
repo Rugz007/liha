@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-function useMutableQuery<T>({
+function useQueryWrapper<T>({
   queryKey,
   queryFn,
   mutateFn,
   editFn,
+  onMutationSuccess,
 }: {
   queryKey: string[];
   queryFn: () => Promise<T>;
   mutateFn: (data: T) => Promise<void>;
   editFn: (old: T, newState: T) => T;
+  onMutationSuccess?: () => void;
 }): {
   data: T | undefined;
   isLoading: boolean;
@@ -26,7 +28,6 @@ function useMutableQuery<T>({
     queryFn: queryFn,
     staleTime: Infinity,
   });
-
   const { mutate, isPending, isError, isSuccess } = useMutation({
     mutationFn: (newState: T) => {
       if (!data) {
@@ -53,15 +54,29 @@ function useMutableQuery<T>({
       console.error(err);
     },
     onSettled: () => {
+      if (onMutationSuccess !== undefined) {
+        console.log("Calling onMutationSuccess");
+        onMutationSuccess();
+      }
       queryClient.invalidateQueries({
         queryKey,
       });
     },
+    onSuccess: () => {},
   });
   if (error) {
     console.error(error);
   }
-  return { data, isLoading, error, mutate, isError, isPending, isSuccess, refetch };
+  return {
+    data,
+    isLoading,
+    error,
+    mutate,
+    isError,
+    isPending,
+    isSuccess,
+    refetch,
+  };
 }
 
-export { useMutableQuery as useQueryWrapper };
+export { useQueryWrapper };

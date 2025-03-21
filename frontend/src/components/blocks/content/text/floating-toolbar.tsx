@@ -18,6 +18,7 @@ import {
   LucideUnderline,
 } from "lucide-react";
 import { BoldExtension } from "remirror/extensions";
+import { FEATURE_AI_TOOLS } from "../../../../lib/feature-flags";
 const DEFAULT_MODIFIERS = [
   {
     name: "offset",
@@ -60,10 +61,12 @@ const BubbleMenu = ({
           className="bg-background p-1 rounded-lg shadow-md border"
         >
           <div className="flex gap-1">
-            <Button variant={"ghost"} size="xs">
-              <LucideSparkles size={12} className="mr-1" />
-              Ask Lekha
-            </Button>
+            {FEATURE_AI_TOOLS && (
+              <Button variant={"ghost"} size="xs">
+                <LucideSparkles size={12} className="mr-1" />
+                Ask Lekha
+              </Button>
+            )}
             <Button
               variant={"ghost"}
               size="xs"

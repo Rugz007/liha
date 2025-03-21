@@ -86,7 +86,7 @@ function useCreateObject() {
     mutationKey: ["createObject"],
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["objects"],
+        queryKey: ["objects", "ALL"],
       });
     },
     onError: (error) => {
@@ -190,6 +190,7 @@ function useObjectsOfType(type: string) {
 }
 ``;
 function useObject(id: string) {
+  const queryClient = useQueryClient();
   return useQueryWrapper<ObjectInstance>({
     queryKey: ["object", id],
     queryFn: async () => {
@@ -208,8 +209,17 @@ function useObject(id: string) {
       }
       return { ...old, ...newState };
     },
-    mutateFn: (newState: ObjectInstance) => {
+    mutateFn: async (newState: ObjectInstance) => {
       return UpdateObject(JSON.stringify(newState));
+    },
+    onMutationSuccess: () => {
+      console.log("Mutation success");
+      queryClient.invalidateQueries({
+        queryKey: ["object", "sidebar", id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["object", "tabs", id],
+      });
     },
   });
 }

@@ -21,6 +21,11 @@ func (repo *ObjectTypeRepository) CreateObjectType(objectType *models.ObjectType
 	return err
 }
 
+func (repo *ObjectTypeRepository) DoesObjectTypeExist(objectTypeID string) bool {
+	err := repo.db.QueryRow("SELECT id FROM object_type").Scan(&objectTypeID)
+	return err == nil
+}
+
 func (repo *ObjectTypeRepository) GetObjectType(objectTypeID string) (*models.ObjectType, error) {
 	objectType := &models.ObjectType{}
 	err := repo.db.QueryRow(
