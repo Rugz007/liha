@@ -19,13 +19,9 @@ import {
   LucideTablets,
   LucideX,
 } from "lucide-react";
-// import { useObjectTypesStore } from "@/store/objectsStore";
+
 import { Button } from "../../ui/button";
-import {
-  DEFAULT_INBOX_TAB_ID,
-  useSidebarState,
-  useTabsState,
-} from "@/store/miscStore";
+import { DEFAULT_INBOX_TAB_ID, useTabsState } from "@/store/miscStore";
 import { v4 as uuid } from "uuid";
 import { cn } from "@/lib/utils";
 import { Separator } from "../../ui/separator";
@@ -47,15 +43,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueries } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { COLLECTIONS_FLAG } from "../../../lib/feature-flags";
+import { COLLECTIONS_FLAG, FEATURE_TASKS } from "../../../lib/feature-flags";
 const colorMap: {
   [key: string]: string;
 } = {
@@ -69,9 +63,12 @@ const colorMap: {
   gray: "#d1d5db",
 };
 
-const Sidebar = () => {
+const Sidebar = ({
+  setSidebarOpen,
+}: {
+  setSidebarOpen: (arg0: boolean) => void;
+}) => {
   const { createTab, tabsState, removeTab, setActiveTab } = useTabsState();
-  const { setSidebarOpen } = useSidebarState();
   const { addObjectType } = useObjectTypesUnsavedStore();
   const { data: ids } = useAllObjectTypesIDs();
   const allObjectTypesQueries = useAllObjectTypes(ids);
@@ -138,7 +135,7 @@ const Sidebar = () => {
       name: "",
       baseType: "page",
       description: "",
-      color: "",
+      color: "red-500",
       properties: {},
       fixed: false,
     });
@@ -202,7 +199,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-full flex flex-col gap-4 px-3 py-2 disable-select bg-muted">
+    <div className="h-full flex flex-col gap-4 px-3 py-2 disable-select bg-muted border-r border-border">
       <div className="flex h-[22px] justify-between draggable">
         <div />
         <Button
@@ -214,29 +211,41 @@ const Sidebar = () => {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-row gap-2">
         <Button
           variant={"ghost"}
-          className={cn("justify-normal px-2 gap-2 ")}
+          className={cn("justify-center px-2 gap-2 w-full bg-secondary/50")}
           size={"sm"}
           onClick={() => {
             createTab(DEFAULT_INBOX_TAB_ID, "inbox");
           }}
         >
-          <LucideInbox size={16} />
-          Inbox
+          <LucideHome size={16} />
         </Button>
-        {/* <Button
-          variant={"ghost"}
-          className={cn("justify-normal px-2 gap-2")}
-          size={"sm"}
-          disabled
-        >
-          <LucideCalendar size={16} />
-          Calendar
-        </Button> */}
+        {FEATURE_TASKS && (
+          <>
+            <Button
+              variant={"ghost"}
+              className={cn("justify-center px-2 gap-2 w-full bg-secondary/50")}
+              size={"sm"}
+              onClick={() => {
+                createTab(DEFAULT_INBOX_TAB_ID, "inbox");
+              }}
+            >
+              <LucideListTodo size={16} />
+            </Button>
+            <Button
+              variant={"ghost"}
+              className={cn("justify-center px-2 gap-2 w-full bg-secondary/50")}
+              size={"sm"}
+              disabled
+            >
+              <LucideCalendar size={16} />
+            </Button>
+          </>
+        )}
       </div>
-      <Separator />
+      {/* <Separator /> */}
       <div className="flex items-center gap-2 px-2 text-sm text-muted-foreground">
         <LucidePin size={15} /> Pinned Tabs
       </div>
@@ -244,10 +253,10 @@ const Sidebar = () => {
         <Tabs className="h-full" value={tabsState.activeTab ?? ""}>
           <TabsList
             className={
-              "h-[4%] px-2 draggable w-full justify-start flex flex-col  "
+              "h-[4%] px-2 draggable w-full justify-start flex flex-col"
             }
           >
-            <AnimatePresence initial={false}>
+            <>
               {pinnedObjects.map((object) => (
                 <TabsTrigger
                   key={object.id}
@@ -275,8 +284,7 @@ const Sidebar = () => {
                     transition={{ duration: 0.2 }}
                     className={"flex gap-2 w-full justify-between items-center"}
                   >
-                    {object.title}
-                    {/* TODO: Add removing pins */}
+                    {object.title || "Untitled"}
                     {/* <Button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -294,7 +302,12 @@ const Sidebar = () => {
                   </motion.div>
                 </TabsTrigger>
               ))}
-            </AnimatePresence>
+              {pinnedObjects.length === 0 && (
+                <div className="text-muted-foreground text-sm">
+                  No pinned tabs
+                </div>
+              )}
+            </>
           </TabsList>
         </Tabs>
       </div>
@@ -309,7 +322,7 @@ const Sidebar = () => {
               "h-[4%] px-2 draggable w-full justify-start flex flex-col  "
             }
           >
-            <AnimatePresence initial={false}>
+            <>
               {tabsState.tabs.map((tab) => {
                 if (
                   tab.type === "object" &&
@@ -386,7 +399,12 @@ const Sidebar = () => {
                   </TabsTrigger>
                 );
               })}
-            </AnimatePresence>
+              {tabsState.tabs.length === 0 && (
+                <div className="text-muted-foreground text-sm">
+                  No open tabs
+                </div>
+              )}
+            </>
           </TabsList>
         </Tabs>
       </div>
@@ -397,8 +415,8 @@ const Sidebar = () => {
             <LucideCuboid size={15} /> Objects
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <LucideEllipsis size={15} />
+            <DropdownMenuTrigger asChild>
+              <LucideEllipsis size={15} className="cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleCreateTab}>
@@ -438,8 +456,10 @@ const Sidebar = () => {
                         <p>{objectType?.name}</p>
                       </div>
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="group-hover:opacity-100 opacity-0">
-                          <LucideEllipsis size={15} />
+                        <DropdownMenuTrigger asChild>
+                          <div className="group-hover:opacity-60 opacity-0 cursor-pointer">
+                            <LucideEllipsis size={15} />
+                          </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
@@ -476,11 +496,13 @@ const Sidebar = () => {
                                 }}
                               >
                                 <p className="w-full text-ellipsis whitespace-nowrap overflow-x-clip">
-                                  {object.title}
+                                  {object.title || "Untitled"}
                                 </p>
                                 <DropdownMenu>
-                                  <DropdownMenuTrigger className="group-hover:opacity-100 opacity-0">
-                                    <LucideEllipsis size={15} />
+                                  <DropdownMenuTrigger asChild>
+                                    <div className="group-hover:opacity-100 opacity-0">
+                                      <LucideEllipsis size={15} />
+                                    </div>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
                                     <DropdownMenuItem>Open</DropdownMenuItem>
@@ -506,6 +528,12 @@ const Sidebar = () => {
                 </AccordionItem>
               );
             })}
+          {!allObjectTypes ||
+            (allObjectTypes.length === 0 && (
+              <div className="text-muted-foreground text-sm">
+                No object types
+              </div>
+            ))}
         </Accordion>
       </div>
 

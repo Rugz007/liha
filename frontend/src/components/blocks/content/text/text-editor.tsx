@@ -32,8 +32,7 @@ import { cn } from "../../../../lib/utils";
 import { FloatingToolbar } from "./floating-toolbar";
 import { DecorationsExtension } from "remirror";
 import { motion } from "framer-motion";
-import { TextColorExtension } from 'remirror/extensions';
-
+import { TextColorExtension } from "remirror/extensions";
 
 // import { WysiwygEditor } from '@remirror/react-editors/wysiwyg';
 const extensions = () => [
@@ -106,6 +105,7 @@ const EditorComponent = ({
   return (
     <motion.div
       {...useRemirrorContext().getRootProps()}
+      key={"editor"}
       onFocus={onFocus}
       onBlur={onBlur}
       className="w-full h-8 bg-gradient-to-b from-background to-transparent "

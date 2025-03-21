@@ -31,6 +31,7 @@ func NewApp() *App {
 	database, err := db.InitDB(logger)
 	db.CreateTables(database)
 	repos := repositories.NewRepositories(database)
+	db.PopulateObjects(repos)
 	handlers := handlers.NewHandlers(repos)
 	defer logger.Sync()
 	// go ai.StartServer()

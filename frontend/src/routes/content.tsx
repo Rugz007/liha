@@ -1,7 +1,4 @@
-import {
-  Tabs,
-  TabsContent
-} from "../components/ui/tabs";
+import { Tabs, TabsContent } from "../components/ui/tabs";
 import { useTabsState } from "../store/miscStore";
 import CreateObjectType from "../components/blocks/CreateObjectType";
 import {
@@ -16,7 +13,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import ObjectContent from "../components/blocks/content/object-content";
 import ObjectDashboard from "../components/blocks/ObjectDashboard";
-// import ToDoList from "../components/blocks/content/todolist/todolist";
+
 const Content = () => {
   const { tabsState, removeTab } = useTabsState();
   const activeTab = tabsState.activeTab;
@@ -25,24 +22,10 @@ const Content = () => {
     <div
       className="py-1"
       style={{
-        height: "calc(100vh - 54px)",
+        height: "calc(100vh - 68px)",
       }}
     >
       <Tabs className="h-full" value={activeTab ?? ""}>
-        {/* <TabsList className={"h-[4%] px-4 draggable w-full justify-start"}>
-          <TabsTrigger
-            value="sidebar"
-            onClick={() => setSidebarOpen(true)}
-            className={cn(
-              "transition-all duration-100 ease-in-out",
-              !isSidebarOpen
-                ? "ml-12 opacity-100"
-                : "ml-0 hidden pointer-events-none opacity-0"
-            )}
-          >
-            <LucidePanelLeftOpen size={18} />
-          </TabsTrigger>
-        </TabsList> */}
         {tabsState.tabs.map((tab) => (
           <TabsContent key={tab.id} value={tab.id} className="h-[100%]  px-4">
             {tab.type === "createObjectType" && (

@@ -17,7 +17,6 @@ CREATE TABLE
     name TEXT NOT NULL,
     ai_automated BOOLEAN NOT NULL DEFAULT FALSE,
     visibility TEXT,
-    icon TEXT,
     default_value TEXT,
     is_object_reference BOOLEAN DEFAULT FALSE, -- Indicates if this property is an object reference
     object_type_id TEXT REFERENCES object_type (id) ON DELETE SET NULL -- Foreign key to object_type, allows referencing an object
